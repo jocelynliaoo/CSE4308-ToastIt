@@ -16,57 +16,144 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Toast it!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNR-y6-IXa">
-                                <rect key="frame" x="369" y="59" width="114" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wzw-lW-zFU">
-                                <rect key="frame" x="379" y="179" width="94" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Play"/>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-yu-TXN">
-                                <rect key="frame" x="328" y="229" width="94" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Stats"/>
-                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
+                                <rect key="frame" x="0.0" y="-9" width="852" height="409"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgE-hR-038">
-                                <rect key="frame" x="430" y="229" width="94" height="35"/>
+                                <rect key="frame" x="408" y="250" width="154" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Settings"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-yu-TXN">
+                                <rect key="frame" x="408" y="207" width="154" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Stats"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Toast it!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNR-y6-IXa">
+                                <rect key="frame" x="349" y="59" width="155" height="61"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="46"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wzw-lW-zFU">
+                                <rect key="frame" x="252" y="213" width="83" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Play"/>
+                                <connections>
+                                    <segue destination="weL-4X-Y38" kind="show" id="mCa-xW-vyi"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="9PL-st-bHT" secondAttribute="trailing" id="LiA-A1-uaf"/>
+                            <constraint firstItem="9PL-st-bHT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="VrC-MT-Wae"/>
+                            <constraint firstAttribute="bottom" secondItem="9PL-st-bHT" secondAttribute="bottom" id="kTn-Td-eOD"/>
+                            <constraint firstItem="9PL-st-bHT" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="uHo-6i-f2q"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="138.73239436619718" y="130.53435114503816"/>
         </scene>
-        <!--View Controller-->
+        <!--Game View Controller-->
         <scene sceneID="tji-tk-Uff">
             <objects>
-                <viewController id="weL-4X-Y38" sceneMemberID="viewController">
+                <viewController id="weL-4X-Y38" customClass="GameViewController" customModule="Toast_It" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mpL-SF-u6F">
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ToastIt-GameScreen" translatesAutoresizingMaskIntoConstraints="NO" id="A8V-wu-ggI">
+                                <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1zU-qn-H9l">
+                                <rect key="frame" x="44" y="22" width="68" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Reset"/>
+                                <connections>
+                                    <action selector="resetTapped:" destination="weL-4X-Y38" eventType="touchUpInside" id="fvu-GB-69v"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qlo-Nq-Gad">
+                                <rect key="frame" x="595" y="21" width="78" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Submit"/>
+                                <connections>
+                                    <action selector="submitTapped:" destination="weL-4X-Y38" eventType="touchUpInside" id="nYi-dU-UjL"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="plate" translatesAutoresizingMaskIntoConstraints="NO" id="MjG-rK-b5P">
+                                <rect key="frame" x="306" y="130" width="226" height="230"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="toast" translatesAutoresizingMaskIntoConstraints="NO" id="gv7-KV-1os">
+                                <rect key="frame" x="333" y="167" width="173" height="157"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Recipe" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dw-Jx-llK">
+                                <rect key="frame" x="701" y="27" width="52" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d1y-Vn-UsG">
+                                <rect key="frame" x="703" y="59" width="49" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="butter" translatesAutoresizingMaskIntoConstraints="NO" id="aXz-3I-p6a">
+                                <rect key="frame" x="595" y="231" width="76" height="62"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="strawberry" translatesAutoresizingMaskIntoConstraints="NO" id="V1J-jS-IYQ">
+                                <rect key="frame" x="152" y="214" width="76" height="62"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="powderedSugarTEMPORARY" translatesAutoresizingMaskIntoConstraints="NO" id="QX7-Bf-o5v">
+                                <rect key="frame" x="701" y="178" width="76" height="115"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Fwb-j1-Yys"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="EAz-NU-L4B"/>
+                    <connections>
+                        <outlet property="butterImageView" destination="aXz-3I-p6a" id="i7y-XL-X3r"/>
+                        <outlet property="plateImageView" destination="MjG-rK-b5P" id="BL8-Oo-a9w"/>
+                        <outlet property="recipeLabel" destination="3dw-Jx-llK" id="4is-89-PoD"/>
+                        <outlet property="statusLabel" destination="d1y-Vn-UsG" id="L4d-85-7Am"/>
+                        <outlet property="strawberryImageView" destination="V1J-jS-IYQ" id="M1r-EY-ecJ"/>
+                        <outlet property="sugarImageView" destination="QX7-Bf-o5v" id="tLi-sy-5FN"/>
+                        <outlet property="toastImageView" destination="gv7-KV-1os" id="7CD-Qb-dIF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LwW-S1-dEk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-143" y="967"/>
+            <point key="canvasLocation" x="-143.66197183098592" y="965.64885496183206"/>
         </scene>
     </scenes>
     <resources>
+        <image name="ToastIt-GameScreen" width="874" height="402"/>
+        <image name="butter" width="90" height="80"/>
+        <image name="plate" width="245" height="245"/>
+        <image name="powderedSugarTEMPORARY" width="360" height="480"/>
+        <image name="strawberry" width="1038" height="980"/>
+        <image name="toast" width="190" height="175"/>
+        <image name="toastIt-mainScreen" width="2400" height="1080"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
