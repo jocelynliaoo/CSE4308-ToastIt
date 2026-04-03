@@ -17,6 +17,9 @@ struct Recipe {
     let points: Int
 }
 
-struct GameAction: Codable {
-    let ingredientName: String
+enum GameAction: Codable {
+    case dropIngredient(name: String)
+    case resetGame
+    case submitGame
+    case setRecipe(recipe: Recipe)
 }

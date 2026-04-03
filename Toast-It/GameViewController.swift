@@ -21,6 +21,7 @@ class GameViewController: UIViewController {
 
     var addedIngredients: [Ingredient] = []
     var butterPlaced = false
+    var score = 0
 
     var currentRecipe = Recipe(
         name: "Strawberry Toast",
@@ -33,28 +34,46 @@ class GameViewController: UIViewController {
     )
 
     var originalCenters: [UIImageView: CGPoint] = [:]
+    
+    let allRecipes = [
+            Recipe(name: "Strawberry Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Strawberries"), Ingredient(name: "Powdered Sugar")], points: 10),
+            Recipe(name: "Plain Butter Toast", requiredIngredients: [Ingredient(name: "Butter")], points: 5)
+        ]
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+            super.viewDidLoad()
 
-        recipeLabel.text = "Recipe: \(currentRecipe.name)"
-        statusLabel.text = "Drag butter onto the toast first"
+           
+            if ConnectionManager.shared.isHost {
+                currentRecipe = allRecipes.randomElement()!
+                recipeLabel.text = "Recipe: \(currentRecipe.name)"
 
-        setupDraggableIngredient(butterImageView)
-        setupDraggableIngredient(strawberryImageView)
-        setupDraggableIngredient(sugarImageView)
+                let action = GameAction.setRecipe(recipe: currentRecipe)
+                if let data = try? JSONEncoder().encode(action) {
+                    try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+                }
+            } else {
+                recipeLabel.text = "Waiting for Host..."
+            }
 
-        originalCenters[butterImageView] = butterImageView.center
-        originalCenters[strawberryImageView] = strawberryImageView.center
-        originalCenters[sugarImageView] = sugarImageView.center
-        
-        ConnectionManager.shared.onDataReceived = { [weak self] data in
-                    if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
-                        self?.receiveRemoteMove(ingredientName: action.ingredientName)
+           
+            
+            ConnectionManager.shared.onDataReceived = { [weak self] data in
+                if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
+                    switch action {
+                    case .dropIngredient(let name):
+                        self?.receiveRemoteMove(ingredientName: name)
+                    case .resetGame:
+                        self?.performLocalReset()
+                    case .submitGame:
+                        self?.performLocalSubmit()
+                    case .setRecipe(let recipe): // 3. Handle the incoming recipe!
+                        self?.currentRecipe = recipe
+                        self?.recipeLabel.text = "Recipe: \(recipe.name)"
                     }
                 }
-            
-    }
+            }
+        }
 
     func setupDraggableIngredient(_ imageView: UIImageView) {
         imageView.isUserInteractionEnabled = true
@@ -115,8 +134,8 @@ class GameViewController: UIViewController {
         }
 
         snapIngredientToToast(imageView)
-        if let ingredientName = ingredientNameForImageView(imageView) {
-                    let action = GameAction(ingredientName: ingredientName)
+                if let ingredientName = ingredientNameForImageView(imageView) {
+                    let action = GameAction.dropIngredient(name: ingredientName)
                     if let data = try? JSONEncoder().encode(action) {
                         try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
                     }
@@ -181,26 +200,65 @@ class GameViewController: UIViewController {
                 snapIngredientToToast(targetView)
             }
         }
+    
+    func performLocalSubmit() {
+            let addedSet = Set(addedIngredients.map { $0.name })
+            let recipeSet = Set(currentRecipe.requiredIngredients.map { $0.name })
+
+            if addedSet == recipeSet {
+             
+                score += currentRecipe.points
+                statusLabel.text = "Correct! +\(currentRecipe.points) pts. Total: \(score)"
+                
+             
+                performLocalReset()
+             
+                statusLabel.text = "Nice! Ready for the next order."
+
+                if ConnectionManager.shared.isHost {
+                    currentRecipe = allRecipes.randomElement()!
+                    recipeLabel.text = "Recipe: \(currentRecipe.name)"
+                    
+                    let action = GameAction.setRecipe(recipe: currentRecipe)
+                    if let data = try? JSONEncoder().encode(action) {
+                        try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+                    }
+                } else {
+                    recipeLabel.text = "Waiting for Host..."
+                }
+            } else {
+              
+                statusLabel.text = "Not quite right. Try again!"
+            }
+        }
 
     @IBAction func submitTapped(_ sender: UIButton) {
-        let addedSet = Set(addedIngredients.map { $0.name })
-        let recipeSet = Set(currentRecipe.requiredIngredients.map { $0.name })
-
-        if addedSet == recipeSet {
-            statusLabel.text = "Correct!"
-        } else {
-            statusLabel.text = "Not quite right. Try again!"
-        }
+        performLocalSubmit()
+                
+                let action = GameAction.submitGame
+                if let data = try? JSONEncoder().encode(action) {
+                    try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+                }
     }
 
+    func performLocalReset() {
+            addedIngredients.removeAll()
+            butterPlaced = false
+
+            returnToOriginalPosition(butterImageView)
+            returnToOriginalPosition(strawberryImageView)
+            returnToOriginalPosition(sugarImageView)
+
+            statusLabel.text = "Drag butter onto the toast first"
+        }
+    
     @IBAction func resetTapped(_ sender: UIButton) {
-        addedIngredients.removeAll()
-        butterPlaced = false
-
-        returnToOriginalPosition(butterImageView)
-        returnToOriginalPosition(strawberryImageView)
-        returnToOriginalPosition(sugarImageView)
-
-        statusLabel.text = "Drag butter onto the toast first"
+        performLocalReset()
+        
+      
+        let action = GameAction.resetGame
+        if let data = try? JSONEncoder().encode(action) {
+            try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+        }
     }
 }

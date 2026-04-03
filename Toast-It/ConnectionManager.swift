@@ -2,7 +2,7 @@
 //  ConnectionManager.swift
 //  Toast-It
 //
-//  Created by user286461 on 4/2/26.
+//  Created by Christien on 4/2/26.
 //
 
 import MultipeerConnectivity
@@ -10,6 +10,8 @@ import MultipeerConnectivity
 class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
     
     static let shared = ConnectionManager()
+    
+    var isHost = false
     
     private let serviceType = "toast-it"
     private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
@@ -30,6 +32,7 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
 
     
     func hostLobby(with code: String) {
+        isHost = true
         advertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: ["lobbyCode": code], serviceType: serviceType)
         advertiser?.delegate = self
         advertiser?.startAdvertisingPeer()
