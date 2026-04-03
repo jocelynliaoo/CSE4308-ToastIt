@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct Ingredient: Equatable {
+struct Ingredient: Equatable, Codable {
     let name: String
 }
 
-struct Recipe {
+struct Recipe: Codable {
     let name: String
     let requiredIngredients: [Ingredient]
     let points: Int
