@@ -16,3 +16,7 @@ struct Recipe {
     let requiredIngredients: [Ingredient]
     let points: Int
 }
+
+struct GameAction: Codable {
+    let ingredientName: String
+}

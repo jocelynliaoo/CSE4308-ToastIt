@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 class GameViewController: UIViewController {
 
@@ -46,6 +47,13 @@ class GameViewController: UIViewController {
         originalCenters[butterImageView] = butterImageView.center
         originalCenters[strawberryImageView] = strawberryImageView.center
         originalCenters[sugarImageView] = sugarImageView.center
+        
+        ConnectionManager.shared.onDataReceived = { [weak self] data in
+                    if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
+                        self?.receiveRemoteMove(ingredientName: action.ingredientName)
+                    }
+                }
+            
     }
 
     func setupDraggableIngredient(_ imageView: UIImageView) {
@@ -107,6 +115,13 @@ class GameViewController: UIViewController {
         }
 
         snapIngredientToToast(imageView)
+        if let ingredientName = ingredientNameForImageView(imageView) {
+                    let action = GameAction(ingredientName: ingredientName)
+                    if let data = try? JSONEncoder().encode(action) {
+                        try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+                    }
+                }
+        
     }
 
     func ingredientNameForImageView(_ imageView: UIImageView) -> String? {
@@ -144,6 +159,28 @@ class GameViewController: UIViewController {
             imageView.center = originalCenter
         }
     }
+    
+    
+        func receiveRemoteMove(ingredientName: String) {
+            let targetView: UIImageView
+            
+            if ingredientName == "Butter" {
+                targetView = butterImageView
+                butterPlaced = true
+                statusLabel.text = "Partner added Butter!"
+            } else if ingredientName == "Strawberries" {
+                targetView = strawberryImageView
+                statusLabel.text = "Partner added Strawberries!"
+            } else {
+                targetView = sugarImageView
+                statusLabel.text = "Partner added Powdered Sugar!"
+            }
+            
+            if !addedIngredients.contains(where: { $0.name == ingredientName }) {
+                addedIngredients.append(Ingredient(name: ingredientName))
+                snapIngredientToToast(targetView)
+            }
+        }
 
     @IBAction func submitTapped(_ sender: UIButton) {
         let addedSet = Set(addedIngredients.map { $0.name })
