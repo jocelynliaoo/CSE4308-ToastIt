@@ -16,18 +16,24 @@ class GameViewController: UIViewController {
     @IBOutlet weak var plateImageView: UIImageView!
     @IBOutlet weak var toastImageView: UIImageView!
     
+    @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var butterImageView: UIImageView!
     @IBOutlet weak var strawberryImageView: UIImageView!
     @IBOutlet weak var sugarImageView: UIImageView!
     
-    // add timerLabel, scoreLabel
+    // add timerLabel, scoreLabel, recipe progress view
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var recipeProgressView: UIProgressView!
     
     // game state
     var addedIngredients: [Ingredient] = []
     var butterPlaced = false
+    
+    // for results page
     var score = 0
+    var dishesSubmitted = 0
+    var dishesLost = 0
     
     var currentRecipe = Recipe(
         name: "Strawberry Toast",
@@ -41,11 +47,16 @@ class GameViewController: UIViewController {
     
     var originalCenters: [UIImageView: CGPoint] = [:]
     
-    // timer
+    // game timer
     let gameDuration = 60
     var timeLeft = 60
     var gameTimer: Timer?
     var gameRunning = false
+    
+    // recipe timer
+    let recipeDuration = 10
+    var recipeTimeLeft = 10
+    var recipeTimer: Timer?
     
     // recipe list
     let allRecipes = [
@@ -58,11 +69,15 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.sendSubviewToBack(backgroundImageView)
         DispatchQueue.main.async {
             self.originalCenters[self.butterImageView]     = self.butterImageView.center
             self.originalCenters[self.strawberryImageView] = self.strawberryImageView.center
             self.originalCenters[self.sugarImageView]      = self.sugarImageView.center
+            
+            self.view.bringSubviewToFront(self.butterImageView)
+            self.view.bringSubviewToFront(self.strawberryImageView)
+            self.view.bringSubviewToFront(self.sugarImageView)
             
             self.setupDraggableIngredient(self.butterImageView)
             self.setupDraggableIngredient(self.strawberryImageView)
@@ -107,6 +122,7 @@ class GameViewController: UIViewController {
         currentRecipe = allRecipes.randomElement()!
         updateRecipeUI()
         broadcastCurrentRecipeIfHost()
+        updateRecipeTimer()
     }
     
     // UI Updates
@@ -127,16 +143,66 @@ class GameViewController: UIViewController {
         timerLabel.textColor = timeLeft <= 10 ? .systemRed : .label
     }
     
+    func updateRecipeTimer() {
+        stopRecipeTimer() // cancel the current running timer
+        recipeTimeLeft = recipeDuration
+        recipeProgressView.progress = 1.0
+        recipeProgressView.tintColor = .systemGreen
+        
+        recipeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            self.recipeTimeLeft -= 1
+            let fraction = Float(self.recipeTimeLeft) / Float(self.recipeDuration)
+            UIView.animate(withDuration: 0.4) {
+                self.recipeProgressView.setProgress(fraction, animated: true)
+            }
+            
+            
+            // change colors
+            if self.recipeTimeLeft <= 3 {
+                self.recipeProgressView.tintColor = .systemRed
+            } else if self.recipeTimeLeft <= 6 {
+                self.recipeProgressView.tintColor = .systemOrange
+            }
+            
+            if self.recipeTimeLeft <= 0 {
+                self.recipeExpired()
+            }
+        }
+    }
+    
+    func stopRecipeTimer() {
+        recipeTimer?.invalidate()
+        recipeTimer = nil
+    }
+
+    func recipeExpired() {
+        stopRecipeTimer( )
+        recipeProgressView.progress = 0
+        score -= currentRecipe.points // deduct points from score
+        updateScoreUI()
+        statusLabel.text = "Too slow! -\(currentRecipe.points) pts"
+        dishesLost += 1
+        
+        // short pause then move on
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+            guard let self = self, self.gameRunning else { return }
+            self.performLocalReset()
+            self.pickRandomRecipe()
+        }
+    }
+    
     // game flow
     func startGame() {
         score = 0
+        dishesLost = 0
+        dishesSubmitted = 0
         timeLeft = gameDuration
         gameRunning = true
-        
         updateScoreUI()
         updateTimerUI()
         pickRandomRecipe()
-        statusLabel.text = "Drag butter onto the toast first!"
+        statusLabel.text = "Drag butter onto the toast first"
         
         gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
@@ -152,20 +218,20 @@ class GameViewController: UIViewController {
         gameTimer?.invalidate()
         gameTimer = nil
         gameRunning = false
-        
+        stopRecipeTimer()
+        recipeProgressView.progress = 0
         statusLabel.text = "Time's up! Final score: \(score)"
         
-        // TODO: Navigate to a results screen, or show an alert
-        let alert = UIAlertController(
-            title: "Time's Up!",
-            message: "Final score: \(score)",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "Play Again", style: .default) { [weak self] _ in
-            self?.performLocalReset()
-            self?.startGame()
-        })
-        present(alert, animated: true)
+        performSegue(withIdentifier: "showResultsSegue", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showResultsSegue",
+           let resultsVC = segue.destination as? ResultsViewController {
+            resultsVC.dishesSubmitted = dishesSubmitted
+            resultsVC.dishesLost = dishesLost
+            resultsVC.finalScore = score
+        }
     }
     
     // multiplayer setup
@@ -220,6 +286,10 @@ class GameViewController: UIViewController {
     @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
         guard gameRunning, let draggedView = gesture.view as? UIImageView else { return }
         
+        if gesture.state == .began {
+            view.bringSubviewToFront(draggedView)
+        }
+        
         let translation = gesture.translation(in: view)
         
         switch gesture.state {
@@ -264,7 +334,11 @@ class GameViewController: UIViewController {
         
         if ingredientName == "Butter" {
             butterPlaced = true
-            statusLabel.text = "Nice! Now add the toppings."
+            if currentRecipe.name != "Plain Butter Toast" {
+                statusLabel.text = "Nice! Now add the toppings."
+            } else {
+                statusLabel.text = "Try submitting this plate!"
+            }
         } else {
             statusLabel.text = "\(ingredientName) added!"
         }
@@ -345,15 +419,17 @@ class GameViewController: UIViewController {
         let recipeSet = Set(currentRecipe.requiredIngredients.map { $0.name })
         
         if addedSet == recipeSet {
+            stopRecipeTimer()
             score += currentRecipe.points
-            statusLabel.text = "Correct! +\(currentRecipe.points) pts. Total: \(score)"
+            statusLabel.text = "Correct! +\(currentRecipe.points) pts."
             updateScoreUI()
             performLocalReset()
             pickRandomRecipe()
+            dishesSubmitted += 1
         } else {
             let missing = recipeSet.subtracting(addedSet)
             if missing.isEmpty {
-                statusLabel.text = "Too many ingredients! Use Reset."
+                statusLabel.text = "Too many ingredients! Reset this plate."
             } else {
                 statusLabel.text = "Missing: \(missing.joined(separator: ", "))"
             }

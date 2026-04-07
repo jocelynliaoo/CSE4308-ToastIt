@@ -8,7 +8,13 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var playButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    @IBAction func playClicked(_ sender: Any) {
+        performSegue(withIdentifier: "showGameSegue", sender: self)
     }
 }
