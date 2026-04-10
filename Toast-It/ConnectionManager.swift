@@ -19,6 +19,8 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
     var session: MCSession
     var advertiser: MCNearbyServiceAdvertiser?
     var browser: MCNearbyServiceBrowser?
+    var targetCode: String = ""
+    
     
    
     var onDataReceived: ((Data) -> Void)?
@@ -32,17 +34,20 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
 
     
     func hostLobby(with code: String) {
-        isHost = true
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: ["lobbyCode": code], serviceType: serviceType)
-        advertiser?.delegate = self
-        advertiser?.startAdvertisingPeer()
-    }
+            let discoveryInfo = ["lobbyCode": code]
+            advertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: discoveryInfo, serviceType: "toast-it")
+            advertiser?.delegate = self
+            advertiser?.startAdvertisingPeer()
+            self.isHost = true
+        }
 
    
     func joinLobby(with code: String) {
+        self.targetCode = code
+        self.isHost = false
+        
         browser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: serviceType)
         browser?.delegate = self
-      
         browser?.startBrowsingForPeers()
     }
     
@@ -76,8 +81,14 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
 
 
         func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+
+            if let hostCode = info?["lobbyCode"], hostCode == self.targetCode {
+            
+                browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 30)
+            
          
-            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+                browser.stopBrowsingForPeers()
+            }
         }
 
         func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {

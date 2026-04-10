@@ -26,6 +26,7 @@ class LobbyViewController: UIViewController {
         ConnectionManager.shared.joinLobby(with: "1234")
     }
     
+    
     @IBAction func hostTapped(_ sender: UIButton) {
         let code = String(Int.random(in: 1000...9999))
         print("Hosting game with code: \(code)")

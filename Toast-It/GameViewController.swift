@@ -58,6 +58,8 @@ class GameViewController: UIViewController {
     var recipeTimeLeft = 10
     var recipeTimer: Timer?
     
+    var officialSeatingOrder: [String] = []
+    
     // recipe list
     let allRecipes = [
         Recipe(name: "Strawberry Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Strawberries"), Ingredient(name: "Powdered Sugar")], points: 10),
@@ -88,41 +90,37 @@ class GameViewController: UIViewController {
             self.setupSwipeGestures(for: self.sugarImageView)
         }
         
-        setupMultipeer()
-        startGame()
-        
-        //            if ConnectionManager.shared.isHost {
-        //                currentRecipe = allRecipes.randomElement()!
-        //                recipeLabel.text = "Recipe: \(currentRecipe.name)"
-        //
-        //                let action = GameAction.setRecipe(recipe: currentRecipe)
-        //                if let data = try? JSONEncoder().encode(action) {
-        //                    try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
-        //                }
-        //            } else {
-        //                recipeLabel.text = "Waiting for Host..."
-        //            }
-        //
-        //
-        //
-        //            ConnectionManager.shared.onDataReceived = { [weak self] data in
-        //                if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
-        //                    switch action {
-        //                    case .dropIngredient(let name):
-        //                        self?.receiveRemoteMove(ingredientName: name)
-        //                    case .resetGame:
-        //                        self?.performLocalReset()
-        //                    case .submitGame:
-        //                        self?.performLocalSubmit()
-        //                    case .setRecipe(let recipe): // 3. Handle the incoming recipe!
-        //                        self?.currentRecipe = recipe
-        //                        self?.recipeLabel.text = "Recipe: \(recipe.name)"
-        //                    case .passIngredient(let name):
-        //                        self.receivePassedIngredient(name: name)
-        //                    }
-        //                }
-        //            }
-    }
+        func setupMultipeer() {
+                guard isMultiplayerEnabled else { return }
+                if ConnectionManager.shared.isHost {
+                    broadcastCurrentRecipeIfHost()
+                } else {
+                    recipeLabel.text = "Waiting for Host..."
+                }
+                
+                ConnectionManager.shared.onDataReceived = { [weak self] data in
+                    guard let self = self else { return }
+                    if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
+                        DispatchQueue.main.async {
+                            switch action {
+                            case .dropIngredient(let name):
+                                self.receiveRemoteMove(ingredientName: name)
+                            case .resetGame:
+                                self.performLocalReset()
+                            case .submitGame:
+                                self.performLocalSubmit()
+                            case .setRecipe(let recipe):
+                                self.currentRecipe = recipe
+                                self.updateRecipeUI()
+                            case .passIngredient(let name):
+                                self.receivePassedIngredient(name: name)
+                            case .setSeatingOrder(let playerNames): // ADD THIS CASE
+                                self.officialSeatingOrder = playerNames
+                            }
+                        }
+                    }
+                }
+            }
     
     func receivePassedIngredient(name: String) {
         let targetView: UIImageView
@@ -324,27 +322,26 @@ class GameViewController: UIViewController {
     }
     
     func getTargetPeer(for direction: UISwipeGestureRecognizer.Direction) -> MCPeerID? {
-        let session = ConnectionManager.shared.session
-        var allPeers = session.connectedPeers
-        allPeers.append(session.myPeerID) // Add local player to the circle
-        
-        guard allPeers.count > 1 else { return nil } // No one to pass to
-        
-        // Sort alphabetically so the "circle" is identical on all devices
-        allPeers.sort { $0.displayName < $1.displayName }
-        
-        guard let myIndex = allPeers.firstIndex(of: session.myPeerID) else { return nil }
-        
-        if direction == .right {
-            let nextIndex = (myIndex + 1) % allPeers.count
-            return allPeers[nextIndex]
-        } else if direction == .left {
-            let prevIndex = (myIndex - 1 + allPeers.count) % allPeers.count
-            return allPeers[prevIndex]
+            let session = ConnectionManager.shared.session
+            let myName = session.myPeerID.displayName
+            
+            guard officialSeatingOrder.count > 1,
+                  let myIndex = officialSeatingOrder.firstIndex(of: myName) else { return nil }
+            
+            // Find the name of the person next to me
+            let targetName: String
+            if direction == .right {
+                let nextIndex = (myIndex + 1) % officialSeatingOrder.count
+                targetName = officialSeatingOrder[nextIndex]
+            } else { // .left
+                let prevIndex = (myIndex - 1 + officialSeatingOrder.count) % officialSeatingOrder.count
+                targetName = officialSeatingOrder[prevIndex]
+            }
+            
+            // Find the actual MCPeerID that matches that name
+            return session.connectedPeers.first(where: { $0.displayName == targetName })
         }
-        
-        return nil
-    }
+    
     
     @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
         guard gameRunning,

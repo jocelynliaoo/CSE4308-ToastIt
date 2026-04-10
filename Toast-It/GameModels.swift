@@ -23,4 +23,5 @@ enum GameAction: Codable {
     case submitGame
     case setRecipe(recipe: Recipe)
     case passIngredient(name: String)
+    case setSeatingOrder(playerNames: [String])
 }
