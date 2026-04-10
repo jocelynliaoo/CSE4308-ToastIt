@@ -22,4 +22,5 @@ enum GameAction: Codable {
     case resetGame
     case submitGame
     case setRecipe(recipe: Recipe)
+    case passIngredient(name: String)
 }

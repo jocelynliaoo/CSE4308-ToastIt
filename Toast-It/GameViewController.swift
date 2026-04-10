@@ -82,6 +82,10 @@ class GameViewController: UIViewController {
             self.setupDraggableIngredient(self.butterImageView)
             self.setupDraggableIngredient(self.strawberryImageView)
             self.setupDraggableIngredient(self.sugarImageView)
+            
+            self.setupSwipeGestures(for: self.butterImageView)
+            self.setupSwipeGestures(for: self.strawberryImageView)
+            self.setupSwipeGestures(for: self.sugarImageView)
         }
         
         setupMultipeer()
@@ -113,9 +117,32 @@ class GameViewController: UIViewController {
         //                    case .setRecipe(let recipe): // 3. Handle the incoming recipe!
         //                        self?.currentRecipe = recipe
         //                        self?.recipeLabel.text = "Recipe: \(recipe.name)"
+        //                    case .passIngredient(let name):
+        //                        self.receivePassedIngredient(name: name)
         //                    }
         //                }
         //            }
+    }
+    
+    func receivePassedIngredient(name: String) {
+        let targetView: UIImageView
+        
+        if name == "Butter" { targetView = butterImageView }
+        else if name == "Strawberries" { targetView = strawberryImageView }
+        else { targetView = sugarImageView }
+        
+        guard let originalCenter = originalCenters[targetView] else { return }
+        
+        // Place it above the screen to start, make it visible and interactable
+        targetView.center = CGPoint(x: view.bounds.width / 2, y: -100)
+        targetView.isHidden = false
+        targetView.isUserInteractionEnabled = true
+        statusLabel.text = "Received \(name)!"
+        
+        // Animate it sliding back into its resting position
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            targetView.center = originalCenter
+        }, completion: nil)
     }
     
     func pickRandomRecipe() {
@@ -257,6 +284,8 @@ class GameViewController: UIViewController {
                     case .setRecipe(let recipe):
                         self.currentRecipe = recipe
                         self.updateRecipeUI()
+                    case .passIngredient(let name):
+                        self.receivePassedIngredient(name: name)
                     }
                 }
             }
@@ -281,6 +310,68 @@ class GameViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         imageView.addGestureRecognizer(panGesture)
+    }
+    
+    
+    func setupSwipeGestures(for imageView: UIImageView) {
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        swipeLeft.direction = .left
+        imageView.addGestureRecognizer(swipeLeft)
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        swipeRight.direction = .right
+        imageView.addGestureRecognizer(swipeRight)
+    }
+    
+    func getTargetPeer(for direction: UISwipeGestureRecognizer.Direction) -> MCPeerID? {
+        let session = ConnectionManager.shared.session
+        var allPeers = session.connectedPeers
+        allPeers.append(session.myPeerID) // Add local player to the circle
+        
+        guard allPeers.count > 1 else { return nil } // No one to pass to
+        
+        // Sort alphabetically so the "circle" is identical on all devices
+        allPeers.sort { $0.displayName < $1.displayName }
+        
+        guard let myIndex = allPeers.firstIndex(of: session.myPeerID) else { return nil }
+        
+        if direction == .right {
+            let nextIndex = (myIndex + 1) % allPeers.count
+            return allPeers[nextIndex]
+        } else if direction == .left {
+            let prevIndex = (myIndex - 1 + allPeers.count) % allPeers.count
+            return allPeers[prevIndex]
+        }
+        
+        return nil
+    }
+    
+    @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
+        guard gameRunning,
+              let imageView = gesture.view as? UIImageView,
+              let ingredientName = ingredientNameForImageView(imageView) else { return }
+        
+        guard let targetPeer = getTargetPeer(for: gesture.direction) else {
+            statusLabel.text = "No player there!"
+            return
+        }
+        
+        // 1. Animate ingredient off-screen
+        let offset: CGFloat = gesture.direction == .left ? -500 : 500
+        imageView.isUserInteractionEnabled = false // Prevent interacting while passed
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            imageView.center.x += offset
+        }) { _ in
+            imageView.isHidden = true // Hide it completely once off screen
+        }
+        
+        // 2. Send exclusively to the target peer
+        let action = GameAction.passIngredient(name: ingredientName)
+        if let data = try? JSONEncoder().encode(action) {
+            try? ConnectionManager.shared.session.send(data, toPeers: [targetPeer], with: .reliable)
+            statusLabel.text = "Passed \(ingredientName) to \(targetPeer.displayName)"
+        }
     }
     
     @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
@@ -439,9 +530,16 @@ class GameViewController: UIViewController {
     func performLocalReset() {
         addedIngredients.removeAll()
         butterPlaced = false
+        
         returnToOriginalPosition(butterImageView)
         returnToOriginalPosition(strawberryImageView)
         returnToOriginalPosition(sugarImageView)
+        
+        let views = [butterImageView, strawberryImageView, sugarImageView]
+        views.forEach {
+            $0?.isHidden = false
+            $0?.isUserInteractionEnabled = true
+        }
         
         statusLabel.text = "Drag butter onto the toast first"
     }
