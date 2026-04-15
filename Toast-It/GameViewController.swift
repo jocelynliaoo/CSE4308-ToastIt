@@ -20,6 +20,12 @@ class GameViewController: UIViewController {
     @IBOutlet weak var butterImageView: UIImageView!
     @IBOutlet weak var strawberryImageView: UIImageView!
     @IBOutlet weak var sugarImageView: UIImageView!
+    @IBOutlet weak var eggImageView: UIImageView!
+    @IBOutlet weak var jamImageView: UIImageView!
+    @IBOutlet weak var peanutButterImageView: UIImageView!
+    @IBOutlet weak var creamImageView: UIImageView!
+    @IBOutlet weak var avocadoImageView: UIImageView!
+    @IBOutlet weak var seasoningImageView: UIImageView!
     
     // add timerLabel, scoreLabel, recipe progress view
     @IBOutlet weak var timerLabel: UILabel!
@@ -34,6 +40,9 @@ class GameViewController: UIViewController {
     var score = 0
     var dishesSubmitted = 0
     var dishesLost = 0
+    
+    //for the ingredients to show up based on recipe
+    var ingredientViews: [String: UIImageView] = [:]
     
     var currentRecipe = Recipe(
         name: "Strawberry Toast",
@@ -63,265 +72,317 @@ class GameViewController: UIViewController {
     // recipe list
     let allRecipes = [
         Recipe(name: "Strawberry Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Strawberries"), Ingredient(name: "Powdered Sugar")], points: 10),
-        Recipe(name: "Plain Butter Toast", requiredIngredients: [Ingredient(name: "Butter")], points: 5)
-        // avocado toast
+        Recipe(name: "Plain Butter Toast", requiredIngredients: [Ingredient(name: "Butter")], points: 5),
+        Recipe(name: "Egg Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Egg")], points: 8),
+        Recipe(name: "PB & J Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Peanut Butter"), Ingredient(name: "Jam")], points: 10),
+        Recipe(name: "Strawberries and Cream Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Cream"), Ingredient(name: "Strawberries")], points: 8),
+        Recipe(name: "Avocado Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Avocado"), Ingredient(name: "Seasoning")], points: 8),
+        Recipe(name: "Avocado and Egg Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Avocado"), Ingredient(name: "Egg"), Ingredient(name: "Seasoning")], points: 10),
     ]
     
     let isMultiplayerEnabled = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.sendSubviewToBack(backgroundImageView)
+        
+        ingredientViews = [
+            "Butter": butterImageView,
+            "Strawberries": strawberryImageView,
+            "Powdered Sugar": sugarImageView,
+            "Egg": eggImageView,
+            "Jam": jamImageView,
+            "Peanut Butter": peanutButterImageView,
+            "Cream": creamImageView,
+            "Avocado": avocadoImageView,
+            "Seasoning": seasoningImageView
+        ]
+        
         DispatchQueue.main.async {
-            self.originalCenters[self.butterImageView]     = self.butterImageView.center
+            self.originalCenters[self.butterImageView] = self.butterImageView.center
             self.originalCenters[self.strawberryImageView] = self.strawberryImageView.center
-            self.originalCenters[self.sugarImageView]      = self.sugarImageView.center
+            self.originalCenters[self.sugarImageView] = self.sugarImageView.center
+            self.originalCenters[self.eggImageView] = self.eggImageView.center
+            self.originalCenters[self.jamImageView] = self.jamImageView.center
+            self.originalCenters[self.peanutButterImageView] = self.peanutButterImageView.center
+            self.originalCenters[self.creamImageView] = self.creamImageView.center
+            self.originalCenters[self.avocadoImageView] = self.avocadoImageView.center
+            self.originalCenters[self.seasoningImageView] = self.seasoningImageView.center
             
             self.view.bringSubviewToFront(self.butterImageView)
             self.view.bringSubviewToFront(self.strawberryImageView)
             self.view.bringSubviewToFront(self.sugarImageView)
+            self.view.bringSubviewToFront(self.eggImageView)
+            self.view.bringSubviewToFront(self.jamImageView)
+            self.view.bringSubviewToFront(self.peanutButterImageView)
+            self.view.bringSubviewToFront(self.creamImageView)
+            self.view.bringSubviewToFront(self.avocadoImageView)
+            self.view.bringSubviewToFront(self.seasoningImageView)
             
             self.setupDraggableIngredient(self.butterImageView)
             self.setupDraggableIngredient(self.strawberryImageView)
             self.setupDraggableIngredient(self.sugarImageView)
+            self.setupDraggableIngredient(self.eggImageView)
+            self.setupDraggableIngredient(self.jamImageView)
+            self.setupDraggableIngredient(self.peanutButterImageView)
+            self.setupDraggableIngredient(self.creamImageView)
+            self.setupDraggableIngredient(self.avocadoImageView)
+            self.setupDraggableIngredient(self.seasoningImageView)
             
             self.setupSwipeGestures(for: self.butterImageView)
             self.setupSwipeGestures(for: self.strawberryImageView)
             self.setupSwipeGestures(for: self.sugarImageView)
+            self.setupSwipeGestures(for: self.eggImageView)
+            self.setupSwipeGestures(for: self.jamImageView)
+            self.setupSwipeGestures(for: self.peanutButterImageView)
+            self.setupSwipeGestures(for: self.creamImageView)
+            self.setupSwipeGestures(for: self.avocadoImageView)
+            self.setupSwipeGestures(for: self.seasoningImageView)
         }
         
-        func setupMultipeer() {
-                guard isMultiplayerEnabled else { return }
-                if ConnectionManager.shared.isHost {
-                    broadcastCurrentRecipeIfHost()
-                } else {
-                    recipeLabel.text = "Waiting for Host..."
+        updateRecipeUI()
+        updateScoreUI()
+        updateTimerUI()
+        recipeProgressView.progress = 1.0
+        setupMultipeer()
+        startGame()
+    }
+        
+        func receivePassedIngredient(name: String) {
+            let targetView: UIImageView
+            
+            if name == "Butter" { targetView = butterImageView }
+            else if name == "Strawberries" { targetView = strawberryImageView }
+            else { targetView = sugarImageView }
+            
+            guard let originalCenter = originalCenters[targetView] else { return }
+            
+            // Place it above the screen to start, make it visible and interactable
+            targetView.center = CGPoint(x: view.bounds.width / 2, y: -100)
+            targetView.isHidden = false
+            targetView.isUserInteractionEnabled = true
+            statusLabel.text = "Received \(name)!"
+            
+            // Animate it sliding back into its resting position
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+                targetView.center = originalCenter
+            }, completion: nil)
+        }
+        
+        func pickRandomRecipe() {
+            currentRecipe = allRecipes.randomElement()!
+            updateRecipeUI()
+            updateVisibleIngredients()
+            broadcastCurrentRecipeIfHost()
+            updateRecipeTimer()
+        }
+    
+        func updateVisibleIngredients() {
+            // Hide and reset everything first
+            for (_, imageView) in ingredientViews {
+                if let originalCenter = originalCenters[imageView] {
+                    imageView.center = originalCenter
+                }
+            imageView.isHidden = true
+            imageView.isUserInteractionEnabled = false
+        }
+
+        // Show only ingredients needed for the current recipe
+        for ingredient in currentRecipe.requiredIngredients {
+            if let imageView = ingredientViews[ingredient.name] {
+                if let originalCenter = originalCenters[imageView] {
+                    imageView.center = originalCenter
+                }
+                imageView.isHidden = false
+                imageView.isUserInteractionEnabled = true
+                view.bringSubviewToFront(imageView)
+            }
+        }
+    }
+        
+        // UI Updates
+        func updateRecipeUI() {
+            recipeLabel.text = "Recipe: \(currentRecipe.name) (\(currentRecipe.points) pts)"
+        }
+        
+        func updateScoreUI() {
+            scoreLabel.text = "Score: \(score)"
+        }
+        
+        func updateTimerUI() {
+            let minutes = timeLeft / 60
+            let seconds = timeLeft % 60
+            timerLabel.text = String(format: "%d:%02d", minutes, seconds)
+            
+            // Turn red in last 10 seconds
+            timerLabel.textColor = timeLeft <= 10 ? .systemRed : .label
+        }
+        
+        func updateRecipeTimer() {
+            stopRecipeTimer() // cancel the current running timer
+            recipeTimeLeft = recipeDuration
+            recipeProgressView.progress = 1.0
+            recipeProgressView.tintColor = .systemGreen
+            
+            recipeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                guard let self else { return }
+                self.recipeTimeLeft -= 1
+                let fraction = Float(self.recipeTimeLeft) / Float(self.recipeDuration)
+                UIView.animate(withDuration: 0.4) {
+                    self.recipeProgressView.setProgress(fraction, animated: true)
                 }
                 
-                ConnectionManager.shared.onDataReceived = { [weak self] data in
-                    guard let self = self else { return }
-                    if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
-                        DispatchQueue.main.async {
-                            switch action {
-                            case .dropIngredient(let name):
-                                self.receiveRemoteMove(ingredientName: name)
-                            case .resetGame:
-                                self.performLocalReset()
-                            case .submitGame:
-                                self.performLocalSubmit()
-                            case .setRecipe(let recipe):
-                                self.currentRecipe = recipe
-                                self.updateRecipeUI()
-                            case .passIngredient(let name):
-                                self.receivePassedIngredient(name: name)
-                            case .setSeatingOrder(let playerNames): // ADD THIS CASE
-                                self.officialSeatingOrder = playerNames
-                            }
+                
+                // change colors
+                if self.recipeTimeLeft <= 3 {
+                    self.recipeProgressView.tintColor = .systemRed
+                } else if self.recipeTimeLeft <= 6 {
+                    self.recipeProgressView.tintColor = .systemOrange
+                }
+                
+                if self.recipeTimeLeft <= 0 {
+                    self.recipeExpired()
+                }
+            }
+        }
+        
+        func stopRecipeTimer() {
+            recipeTimer?.invalidate()
+            recipeTimer = nil
+        }
+        
+        func recipeExpired() {
+            stopRecipeTimer( )
+            recipeProgressView.progress = 0
+            score -= currentRecipe.points // deduct points from score
+            updateScoreUI()
+            statusLabel.text = "Too slow! -\(currentRecipe.points) pts"
+            dishesLost += 1
+            
+            // short pause then move on
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+                guard let self = self, self.gameRunning else { return }
+                self.performLocalReset()
+                self.pickRandomRecipe()
+            }
+        }
+        
+        // game flow
+        func startGame() {
+            score = 0
+            dishesLost = 0
+            dishesSubmitted = 0
+            timeLeft = gameDuration
+            gameRunning = true
+            updateScoreUI()
+            updateTimerUI()
+            pickRandomRecipe()
+            statusLabel.text = "Drag butter onto the toast first"
+            
+            gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                guard let self = self else { return }
+                self.timeLeft -= 1
+                self.updateTimerUI()
+                if self.timeLeft <= 0 {
+                    self.endGame()
+                }
+            }
+        }
+        
+        func endGame() {
+            gameTimer?.invalidate()
+            gameTimer = nil
+            gameRunning = false
+            stopRecipeTimer()
+            recipeProgressView.progress = 0
+            statusLabel.text = "Time's up! Final score: \(score)"
+            
+            performSegue(withIdentifier: "showResultsSegue", sender: self)
+        }
+        
+        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            if segue.identifier == "showResultsSegue",
+               let resultsVC = segue.destination as? ResultsViewController {
+                resultsVC.dishesSubmitted = dishesSubmitted
+                resultsVC.dishesLost = dishesLost
+                resultsVC.finalScore = score
+            }
+        }
+        
+        // multiplayer setup
+        func setupMultipeer() {
+            guard isMultiplayerEnabled else { return }
+
+            if ConnectionManager.shared.isHost {
+                broadcastCurrentRecipeIfHost()
+            } else {
+                recipeLabel.text = "Waiting for Host..."
+            }
+
+            ConnectionManager.shared.onDataReceived = { [weak self] data in
+                guard let self = self else { return }
+
+                if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
+                    DispatchQueue.main.async {
+                        switch action {
+                        case .dropIngredient(let name):
+                            self.receiveRemoteMove(ingredientName: name)
+
+                        case .resetGame:
+                            self.performLocalReset()
+
+                        case .submitGame:
+                            self.performLocalSubmit()
+
+                        case .setRecipe(let recipe):
+                            self.currentRecipe = recipe
+                            self.updateRecipeUI()
+                            self.updateVisibleIngredients()
+
+                        case .passIngredient(let name):
+                            self.receivePassedIngredient(name: name)
+
+                        case .setSeatingOrder(let playerNames):
+                            self.officialSeatingOrder = playerNames
                         }
                     }
                 }
             }
-    
-    func receivePassedIngredient(name: String) {
-        let targetView: UIImageView
+        }
         
-        if name == "Butter" { targetView = butterImageView }
-        else if name == "Strawberries" { targetView = strawberryImageView }
-        else { targetView = sugarImageView }
-        
-        guard let originalCenter = originalCenters[targetView] else { return }
-        
-        // Place it above the screen to start, make it visible and interactable
-        targetView.center = CGPoint(x: view.bounds.width / 2, y: -100)
-        targetView.isHidden = false
-        targetView.isUserInteractionEnabled = true
-        statusLabel.text = "Received \(name)!"
-        
-        // Animate it sliding back into its resting position
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-            targetView.center = originalCenter
-        }, completion: nil)
-    }
-    
-    func pickRandomRecipe() {
-        currentRecipe = allRecipes.randomElement()!
-        updateRecipeUI()
-        broadcastCurrentRecipeIfHost()
-        updateRecipeTimer()
-    }
-    
-    // UI Updates
-    func updateRecipeUI() {
-        recipeLabel.text = "Recipe: \(currentRecipe.name) (\(currentRecipe.points) pts)"
-    }
-    
-    func updateScoreUI() {
-        scoreLabel.text = "Score: \(score)"
-    }
-    
-    func updateTimerUI() {
-        let minutes = timeLeft / 60
-        let seconds = timeLeft % 60
-        timerLabel.text = String(format: "%d:%02d", minutes, seconds)
-        
-        // Turn red in last 10 seconds
-        timerLabel.textColor = timeLeft <= 10 ? .systemRed : .label
-    }
-    
-    func updateRecipeTimer() {
-        stopRecipeTimer() // cancel the current running timer
-        recipeTimeLeft = recipeDuration
-        recipeProgressView.progress = 1.0
-        recipeProgressView.tintColor = .systemGreen
-        
-        recipeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            self.recipeTimeLeft -= 1
-            let fraction = Float(self.recipeTimeLeft) / Float(self.recipeDuration)
-            UIView.animate(withDuration: 0.4) {
-                self.recipeProgressView.setProgress(fraction, animated: true)
+        func broadcastCurrentRecipeIfHost() {
+            guard isMultiplayerEnabled else { return }
+            guard ConnectionManager.shared.isHost else { return }
+            let action = GameAction.setRecipe(recipe: currentRecipe)
+            if let data = try? JSONEncoder().encode(action) {
+                try? ConnectionManager.shared.session.send(
+                    data,
+                    toPeers: ConnectionManager.shared.session.connectedPeers,
+                    with: .reliable
+                )
             }
+        }
+        
+        // drag and drop
+        func setupDraggableIngredient(_ imageView: UIImageView) {
+            imageView.isUserInteractionEnabled = true
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            imageView.addGestureRecognizer(panGesture)
+        }
+        
+        
+        func setupSwipeGestures(for imageView: UIImageView) {
+            let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+            swipeLeft.direction = .left
+            imageView.addGestureRecognizer(swipeLeft)
             
-            
-            // change colors
-            if self.recipeTimeLeft <= 3 {
-                self.recipeProgressView.tintColor = .systemRed
-            } else if self.recipeTimeLeft <= 6 {
-                self.recipeProgressView.tintColor = .systemOrange
-            }
-            
-            if self.recipeTimeLeft <= 0 {
-                self.recipeExpired()
-            }
-        }
-    }
-    
-    func stopRecipeTimer() {
-        recipeTimer?.invalidate()
-        recipeTimer = nil
-    }
-
-    func recipeExpired() {
-        stopRecipeTimer( )
-        recipeProgressView.progress = 0
-        score -= currentRecipe.points // deduct points from score
-        updateScoreUI()
-        statusLabel.text = "Too slow! -\(currentRecipe.points) pts"
-        dishesLost += 1
-        
-        // short pause then move on
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
-            guard let self = self, self.gameRunning else { return }
-            self.performLocalReset()
-            self.pickRandomRecipe()
-        }
-    }
-    
-    // game flow
-    func startGame() {
-        score = 0
-        dishesLost = 0
-        dishesSubmitted = 0
-        timeLeft = gameDuration
-        gameRunning = true
-        updateScoreUI()
-        updateTimerUI()
-        pickRandomRecipe()
-        statusLabel.text = "Drag butter onto the toast first"
-        
-        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-            self.timeLeft -= 1
-            self.updateTimerUI()
-            if self.timeLeft <= 0 {
-                self.endGame()
-            }
-        }
-    }
-    
-    func endGame() {
-        gameTimer?.invalidate()
-        gameTimer = nil
-        gameRunning = false
-        stopRecipeTimer()
-        recipeProgressView.progress = 0
-        statusLabel.text = "Time's up! Final score: \(score)"
-        
-        performSegue(withIdentifier: "showResultsSegue", sender: self)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showResultsSegue",
-           let resultsVC = segue.destination as? ResultsViewController {
-            resultsVC.dishesSubmitted = dishesSubmitted
-            resultsVC.dishesLost = dishesLost
-            resultsVC.finalScore = score
-        }
-    }
-    
-    // multiplayer setup
-    func setupMultipeer() {
-        guard isMultiplayerEnabled else { return }
-        if ConnectionManager.shared.isHost {
-            broadcastCurrentRecipeIfHost()
-        } else {
-            recipeLabel.text = "Waiting for Host..."
+            let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+            swipeRight.direction = .right
+            imageView.addGestureRecognizer(swipeRight)
         }
         
-        ConnectionManager.shared.onDataReceived = { [weak self] data in
-            guard let self = self else { return }
-            if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
-                DispatchQueue.main.async {
-                    switch action {
-                    case .dropIngredient(let name):
-                        self.receiveRemoteMove(ingredientName: name)
-                    case .resetGame:
-                        self.performLocalReset()
-                    case .submitGame:
-                        self.performLocalSubmit()
-                    case .setRecipe(let recipe):
-                        self.currentRecipe = recipe
-                        self.updateRecipeUI()
-                    case .passIngredient(let name):
-                        self.receivePassedIngredient(name: name)
-                    }
-                }
-            }
-        }
-    }
-        
-    func broadcastCurrentRecipeIfHost() {
-        guard isMultiplayerEnabled else { return }
-        guard ConnectionManager.shared.isHost else { return }
-        let action = GameAction.setRecipe(recipe: currentRecipe)
-        if let data = try? JSONEncoder().encode(action) {
-            try? ConnectionManager.shared.session.send(
-                data,
-                toPeers: ConnectionManager.shared.session.connectedPeers,
-                with: .reliable
-            )
-        }
-    }
-    
-    // drag and drop
-    func setupDraggableIngredient(_ imageView: UIImageView) {
-        imageView.isUserInteractionEnabled = true
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-        imageView.addGestureRecognizer(panGesture)
-    }
-    
-    
-    func setupSwipeGestures(for imageView: UIImageView) {
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
-        swipeLeft.direction = .left
-        imageView.addGestureRecognizer(swipeLeft)
-        
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
-        swipeRight.direction = .right
-        imageView.addGestureRecognizer(swipeRight)
-    }
-    
-    func getTargetPeer(for direction: UISwipeGestureRecognizer.Direction) -> MCPeerID? {
+        func getTargetPeer(for direction: UISwipeGestureRecognizer.Direction) -> MCPeerID? {
             let session = ConnectionManager.shared.session
             let myName = session.myPeerID.displayName
             
@@ -341,220 +402,264 @@ class GameViewController: UIViewController {
             // Find the actual MCPeerID that matches that name
             return session.connectedPeers.first(where: { $0.displayName == targetName })
         }
-    
-    
-    @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
-        guard gameRunning,
-              let imageView = gesture.view as? UIImageView,
-              let ingredientName = ingredientNameForImageView(imageView) else { return }
         
-        guard let targetPeer = getTargetPeer(for: gesture.direction) else {
-            statusLabel.text = "No player there!"
-            return
-        }
         
-        // 1. Animate ingredient off-screen
-        let offset: CGFloat = gesture.direction == .left ? -500 : 500
-        imageView.isUserInteractionEnabled = false // Prevent interacting while passed
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            imageView.center.x += offset
-        }) { _ in
-            imageView.isHidden = true // Hide it completely once off screen
-        }
-        
-        // 2. Send exclusively to the target peer
-        let action = GameAction.passIngredient(name: ingredientName)
-        if let data = try? JSONEncoder().encode(action) {
-            try? ConnectionManager.shared.session.send(data, toPeers: [targetPeer], with: .reliable)
-            statusLabel.text = "Passed \(ingredientName) to \(targetPeer.displayName)"
-        }
-    }
-    
-    @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
-        guard gameRunning, let draggedView = gesture.view as? UIImageView else { return }
-        
-        if gesture.state == .began {
-            view.bringSubviewToFront(draggedView)
-        }
-        
-        let translation = gesture.translation(in: view)
-        
-        switch gesture.state {
-        case .began, .changed:
-            draggedView.center = CGPoint(
-                x: draggedView.center.x + translation.x,
-                y: draggedView.center.y + translation.y
-            )
-            gesture.setTranslation(.zero, in: view)
+        @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
+            guard gameRunning,
+                  let imageView = gesture.view as? UIImageView,
+                  let ingredientName = ingredientNameForImageView(imageView) else { return }
             
-        case .ended:
-            if toastImageView.frame.intersects(draggedView.frame) || plateImageView.frame.intersects(draggedView.frame) {
-                handleDrop(for: draggedView)
-            } else {
-                returnToOriginalPosition(draggedView)
+            guard let targetPeer = getTargetPeer(for: gesture.direction) else {
+                statusLabel.text = "No player there!"
+                return
             }
             
-        default:
-            break
-        }
-    }
-    
-    func handleDrop(for imageView: UIImageView) {
-        guard let ingredientName = ingredientNameForImageView(imageView) else {
-            returnToOriginalPosition(imageView)
-            return
-        }
-        
-        if !butterPlaced && ingredientName != "Butter" {
-            statusLabel.text = "Butter has to go first!"
-            returnToOriginalPosition(imageView)
-            return
-        }
-        
-        if addedIngredients.contains(where: { $0.name == ingredientName }) {
-            statusLabel.text = "\(ingredientName) is already on the toast"
-            snapIngredientToToast(imageView)
-            return
-        }
-        
-        addedIngredients.append(Ingredient(name: ingredientName))
-        
-        if ingredientName == "Butter" {
-            butterPlaced = true
-            if currentRecipe.name != "Plain Butter Toast" {
-                statusLabel.text = "Nice! Now add the toppings."
-            } else {
-                statusLabel.text = "Try submitting this plate!"
+            // 1. Animate ingredient off-screen
+            let offset: CGFloat = gesture.direction == .left ? -500 : 500
+            imageView.isUserInteractionEnabled = false // Prevent interacting while passed
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                imageView.center.x += offset
+            }) { _ in
+                imageView.isHidden = true // Hide it completely once off screen
             }
-        } else {
-            statusLabel.text = "\(ingredientName) added!"
+            
+            // 2. Send exclusively to the target peer
+            let action = GameAction.passIngredient(name: ingredientName)
+            if let data = try? JSONEncoder().encode(action) {
+                try? ConnectionManager.shared.session.send(data, toPeers: [targetPeer], with: .reliable)
+                statusLabel.text = "Passed \(ingredientName) to \(targetPeer.displayName)"
+            }
         }
         
-        // Broadcast to peers
-        let action = GameAction.dropIngredient(name: ingredientName)
-        if let data = try? JSONEncoder().encode(action) {
-            try? ConnectionManager.shared.session.send(
-                data,
-                toPeers: ConnectionManager.shared.session.connectedPeers,
-                with: .reliable
-            )
+        @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+            guard gameRunning, let draggedView = gesture.view as? UIImageView else { return }
+            
+            if gesture.state == .began {
+                view.bringSubviewToFront(draggedView)
+            }
+            
+            let translation = gesture.translation(in: view)
+            
+            switch gesture.state {
+            case .began, .changed:
+                draggedView.center = CGPoint(
+                    x: draggedView.center.x + translation.x,
+                    y: draggedView.center.y + translation.y
+                )
+                gesture.setTranslation(.zero, in: view)
+                
+            case .ended:
+                if toastImageView.frame.intersects(draggedView.frame) || plateImageView.frame.intersects(draggedView.frame) {
+                    handleDrop(for: draggedView)
+                } else {
+                    returnToOriginalPosition(draggedView)
+                }
+                
+            default:
+                break
+            }
         }
         
-    }
-    
-    func ingredientNameForImageView(_ imageView: UIImageView) -> String? {
-        if imageView == butterImageView {
-            return "Butter"
-        } else if imageView == strawberryImageView {
-            return "Strawberries"
-        } else if imageView == sugarImageView {
-            return "Powdered Sugar"
-        }
-        return nil
-    }
-    
-    func snapIngredientToToast(_ imageView: UIImageView) {
-        let center = toastImageView.center
-        var target = center
-        
-        if imageView == butterImageView {
-            target = center
-        } else if imageView == strawberryImageView {
-            target = CGPoint(x: center.x - 30, y: center.y + 5)
-        } else if imageView == sugarImageView {
-            target = CGPoint(x: center.x + 28, y: center.y - 12)
-        }
-        
-        UIView.animate(withDuration: 0.25) {
-            imageView.center = target
-        }
-    }
-    
-    func returnToOriginalPosition(_ imageView: UIImageView) {
-        guard let originalCenter = originalCenters[imageView] else { return }
-        
-        UIView.animate(withDuration: 0.25) {
-            imageView.center = originalCenter
-        }
-    }
-    
-    
-    func receiveRemoteMove(ingredientName: String) {
-        let targetView: UIImageView
-        
-        if ingredientName == "Butter" {
-            targetView = butterImageView
-            butterPlaced = true
-            statusLabel.text = "Partner added Butter!"
-        } else if ingredientName == "Strawberries" {
-            targetView = strawberryImageView
-            statusLabel.text = "Partner added Strawberries!"
-        } else {
-            targetView = sugarImageView
-            statusLabel.text = "Partner added Powdered Sugar!"
-        }
-        
-        if !addedIngredients.contains(where: { $0.name == ingredientName }) {
+        func handleDrop(for imageView: UIImageView) {
+            guard let ingredientName = ingredientNameForImageView(imageView) else {
+                returnToOriginalPosition(imageView)
+                return
+            }
+            
+            if !butterPlaced && ingredientName != "Butter" {
+                statusLabel.text = "Butter has to go first!"
+                returnToOriginalPosition(imageView)
+                return
+            }
+            
+            if addedIngredients.contains(where: { $0.name == ingredientName }) {
+                statusLabel.text = "\(ingredientName) is already on the toast"
+                snapIngredientToToast(imageView)
+                return
+            }
+            
             addedIngredients.append(Ingredient(name: ingredientName))
-            snapIngredientToToast(targetView)
-        }
-    }
-    
-    // submit and reset
-    func performLocalSubmit() {
-        let addedSet = Set(addedIngredients.map { $0.name })
-        let recipeSet = Set(currentRecipe.requiredIngredients.map { $0.name })
-        
-        if addedSet == recipeSet {
-            stopRecipeTimer()
-            score += currentRecipe.points
-            statusLabel.text = "Correct! +\(currentRecipe.points) pts."
-            updateScoreUI()
-            performLocalReset()
-            pickRandomRecipe()
-            dishesSubmitted += 1
-        } else {
-            let missing = recipeSet.subtracting(addedSet)
-            if missing.isEmpty {
-                statusLabel.text = "Too many ingredients! Reset this plate."
+            
+            if ingredientName == "Butter" {
+                butterPlaced = true
+                if currentRecipe.name != "Plain Butter Toast" {
+                    statusLabel.text = "Nice! Now add the toppings."
+                } else {
+                    statusLabel.text = "Try submitting this plate!"
+                }
             } else {
-                statusLabel.text = "Missing: \(missing.joined(separator: ", "))"
+                statusLabel.text = "\(ingredientName) added!"
+            }
+            
+            // Broadcast to peers
+            let action = GameAction.dropIngredient(name: ingredientName)
+            if let data = try? JSONEncoder().encode(action) {
+                try? ConnectionManager.shared.session.send(
+                    data,
+                    toPeers: ConnectionManager.shared.session.connectedPeers,
+                    with: .reliable
+                )
+            }
+            
+        }
+        
+        func ingredientNameForImageView(_ imageView: UIImageView) -> String? {
+            if imageView == butterImageView {
+                return "Butter"
+            } else if imageView == strawberryImageView {
+                return "Strawberries"
+            } else if imageView == sugarImageView {
+                return "Powdered Sugar"
+            } else if imageView == eggImageView {
+                return "Egg"
+            } else if imageView == jamImageView {
+                return "Jam"
+            } else if imageView == peanutButterImageView {
+                return "Peanut Butter"
+            } else if imageView == creamImageView {
+                return "Cream"
+            } else if imageView == avocadoImageView {
+                return "Avocado"
+            } else if imageView == seasoningImageView {
+                return "Seasoning"
+            }
+            return nil
+        }
+        
+        func snapIngredientToToast(_ imageView: UIImageView) {
+            let center = toastImageView.center
+            var target = center
+            
+            if imageView == butterImageView {
+                target = center
+            } else if imageView == strawberryImageView {
+                target = CGPoint(x: center.x - 30, y: center.y + 5)
+            } else if imageView == sugarImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == eggImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == jamImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == peanutButterImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == creamImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == avocadoImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            } else if imageView == seasoningImageView {
+                target = CGPoint(x: center.x + 28, y: center.y - 12)
+            }
+            
+            UIView.animate(withDuration: 0.25) {
+                imageView.center = target
+            }
+        }
+        
+        func returnToOriginalPosition(_ imageView: UIImageView) {
+            guard let originalCenter = originalCenters[imageView] else { return }
+            
+            UIView.animate(withDuration: 0.25) {
+                imageView.center = originalCenter
+            }
+        }
+        
+        
+        func receiveRemoteMove(ingredientName: String) {
+            let targetView: UIImageView
+            
+            if ingredientName == "Butter" {
+                targetView = butterImageView
+                butterPlaced = true
+                statusLabel.text = "Partner added Butter!"
+            } else if ingredientName == "Strawberries" {
+                targetView = strawberryImageView
+                statusLabel.text = "Partner added Strawberries!"
+            } else if ingredientName == "Egg" {
+                targetView = eggImageView
+                statusLabel.text = "Partner added an Egg!"
+            } else if ingredientName == "Jam" {
+                targetView = jamImageView
+                statusLabel.text = "Partner added Jam!"
+            } else if ingredientName == "Peanut Butter" {
+                targetView = peanutButterImageView
+                statusLabel.text = "Partner added Peanut Butter!"
+            } else if ingredientName == "Avocado" {
+                targetView = creamImageView
+                statusLabel.text = "Partner added Avocado!"
+            } else if ingredientName == "Seasoning" {
+                targetView = creamImageView
+                statusLabel.text = "Partner added Seasoning!"
+            } else if ingredientName == "Cream" {
+                targetView = creamImageView
+                statusLabel.text = "Partner added Cream!"
+            }else {
+                targetView = sugarImageView
+                statusLabel.text = "Partner added Powdered Sugar!"
+            }
+            
+            if !addedIngredients.contains(where: { $0.name == ingredientName }) {
+                addedIngredients.append(Ingredient(name: ingredientName))
+                snapIngredientToToast(targetView)
+            }
+        }
+        
+        // submit and reset
+        func performLocalSubmit() {
+            let addedSet = Set(addedIngredients.map { $0.name })
+            let recipeSet = Set(currentRecipe.requiredIngredients.map { $0.name })
+            
+            if addedSet == recipeSet {
+                stopRecipeTimer()
+                score += currentRecipe.points
+                statusLabel.text = "Correct! +\(currentRecipe.points) pts."
+                updateScoreUI()
+                performLocalReset()
+                pickRandomRecipe()
+                dishesSubmitted += 1
+            } else {
+                let missing = recipeSet.subtracting(addedSet)
+                if missing.isEmpty {
+                    statusLabel.text = "Too many ingredients! Reset this plate."
+                } else {
+                    statusLabel.text = "Missing: \(missing.joined(separator: ", "))"
+                }
+            }
+        }
+        
+        func performLocalReset() {
+            addedIngredients.removeAll()
+            butterPlaced = false
+            
+            returnToOriginalPosition(butterImageView)
+            returnToOriginalPosition(strawberryImageView)
+            returnToOriginalPosition(sugarImageView)
+            returnToOriginalPosition(eggImageView)
+            returnToOriginalPosition(jamImageView)
+            returnToOriginalPosition(peanutButterImageView)
+            returnToOriginalPosition(creamImageView)
+            returnToOriginalPosition(avocadoImageView)
+            returnToOriginalPosition(seasoningImageView)
+            
+            updateVisibleIngredients()
+            statusLabel.text = "Drag butter onto the toast first"
+        }
+        
+        // actions
+        @IBAction func submitTapped(_ sender: UIButton) {
+            performLocalSubmit()
+            let action = GameAction.submitGame
+            if let data = try? JSONEncoder().encode(action) {
+                try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+            }
+        }
+        
+        @IBAction func resetTapped(_ sender: UIButton) {
+            performLocalReset()
+            let action = GameAction.resetGame
+            if let data = try? JSONEncoder().encode(action) {
+                try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
             }
         }
     }
-    
-    func performLocalReset() {
-        addedIngredients.removeAll()
-        butterPlaced = false
-        
-        returnToOriginalPosition(butterImageView)
-        returnToOriginalPosition(strawberryImageView)
-        returnToOriginalPosition(sugarImageView)
-        
-        let views = [butterImageView, strawberryImageView, sugarImageView]
-        views.forEach {
-            $0?.isHidden = false
-            $0?.isUserInteractionEnabled = true
-        }
-        
-        statusLabel.text = "Drag butter onto the toast first"
-    }
-    
-    // actions
-    @IBAction func submitTapped(_ sender: UIButton) {
-        performLocalSubmit()
-        let action = GameAction.submitGame
-        if let data = try? JSONEncoder().encode(action) {
-            try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
-        }
-    }
-    
-    @IBAction func resetTapped(_ sender: UIButton) {
-        performLocalReset()
-        let action = GameAction.resetGame
-        if let data = try? JSONEncoder().encode(action) {
-            try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
-        }
-    }
-}
+

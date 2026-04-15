@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_12" orientation="landscape" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -17,9 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
-                                <rect key="frame" x="0.0" y="-9" width="852" height="409"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgE-hR-038">
                                 <rect key="frame" x="412" y="246" width="154" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -57,6 +54,9 @@
                                 <color key="textColor" systemColor="systemBrownColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
+                                <rect key="frame" x="0.0" y="-8" width="852" height="409"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -75,7 +75,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-968" y="-1671"/>
+            <point key="canvasLocation" x="-938" y="-1674"/>
         </scene>
         <!--Lobby View Controller-->
         <scene sceneID="N5I-xU-gpE">
@@ -237,18 +237,48 @@
                                 <color key="textColor" systemColor="systemBrownColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="egg" translatesAutoresizingMaskIntoConstraints="NO" id="Zbx-QC-qKM">
+                                <rect key="frame" x="56" y="255" width="127" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="jam" translatesAutoresizingMaskIntoConstraints="NO" id="LBS-Di-JYn">
+                                <rect key="frame" x="528" y="99" width="143" height="146"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="PeanutButter" translatesAutoresizingMaskIntoConstraints="NO" id="57m-Im-t5a">
+                                <rect key="frame" x="504" y="240" width="130" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="cream" translatesAutoresizingMaskIntoConstraints="NO" id="FNW-pu-rtR">
+                                <rect key="frame" x="183" y="108" width="142" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="seasoning" translatesAutoresizingMaskIntoConstraints="NO" id="x26-ov-gyc">
+                                <rect key="frame" x="214" y="269" width="100" height="91"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="avocado" translatesAutoresizingMaskIntoConstraints="NO" id="GXR-Vp-zOL">
+                                <rect key="frame" x="618" y="265" width="129" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Fwb-j1-Yys"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="EAz-NU-L4B"/>
                     <connections>
+                        <outlet property="avocadoImageView" destination="GXR-Vp-zOL" id="AT1-Vo-nYK"/>
                         <outlet property="backgroundImageView" destination="A8V-wu-ggI" id="cgJ-mD-j1y"/>
                         <outlet property="butterImageView" destination="aXz-3I-p6a" id="i7y-XL-X3r"/>
+                        <outlet property="creamImageView" destination="FNW-pu-rtR" id="y7S-ct-l1s"/>
+                        <outlet property="eggImageView" destination="Zbx-QC-qKM" id="CbX-6A-T7s"/>
+                        <outlet property="jamImageView" destination="LBS-Di-JYn" id="tYD-3h-di4"/>
+                        <outlet property="peanutButterImageView" destination="57m-Im-t5a" id="k8o-9n-lRh"/>
                         <outlet property="plateImageView" destination="MjG-rK-b5P" id="BL8-Oo-a9w"/>
                         <outlet property="recipeLabel" destination="3dw-Jx-llK" id="4is-89-PoD"/>
                         <outlet property="recipeProgressView" destination="55x-ur-CjT" id="1AM-gC-M4B"/>
                         <outlet property="scoreLabel" destination="3pk-Tl-h62" id="g92-Fc-mco"/>
+                        <outlet property="seasoningImageView" destination="x26-ov-gyc" id="dFe-3N-71h"/>
                         <outlet property="statusLabel" destination="d1y-Vn-UsG" id="L4d-85-7Am"/>
                         <outlet property="strawberryImageView" destination="V1J-jS-IYQ" id="yMV-zb-bks"/>
                         <outlet property="sugarImageView" destination="QX7-Bf-o5v" id="tLi-sy-5FN"/>
@@ -259,7 +289,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LwW-S1-dEk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-99" y="-1673"/>
+            <point key="canvasLocation" x="-99.295774647887328" y="-1674.0458015267175"/>
         </scene>
         <!--ResultsViewController-->
         <scene sceneID="5JD-3s-dhg">
@@ -375,15 +405,21 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="nyQ-vv-6yf"/>
+        <segue reference="DFR-cf-6V0"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="PeanutButter" width="757" height="688"/>
         <image name="ToastIt-GameScreen" width="874" height="402"/>
         <image name="ToastIt-lobbyScreen" width="1024" height="460"/>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
+        <image name="avocado" width="215" height="174"/>
         <image name="butter" width="90" height="80"/>
+        <image name="cream" width="771" height="715"/>
+        <image name="egg" width="897" height="919"/>
+        <image name="jam" width="770" height="803"/>
         <image name="plate" width="245" height="245"/>
         <image name="powderedSugarTEMPORARY" width="197" height="160"/>
+        <image name="seasoning" width="127" height="137"/>
         <image name="strawberry" width="200" height="136"/>
         <image name="toast" width="190" height="175"/>
         <image name="toastIt-mainScreen" width="2400" height="1080"/>
@@ -391,7 +427,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBrownColor">
-            <color red="0.67450980390000004" green="0.49803921569999998" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.63529411759999999" green="0.51764705879999995" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
