@@ -12,6 +12,7 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
     static let shared = ConnectionManager()
     
     var isHost = false
+    var onPeerChanged: (([MCPeerID]) -> Void)?
     
     private let serviceType = "toast-it"
     private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
@@ -53,7 +54,14 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         if state == .connected {
-            DispatchQueue.main.async { self.onConnected?() }
+           
+            if !isHost {
+                DispatchQueue.main.async { self.onConnected?() }
+            }
+            
+            DispatchQueue.main.async { self.onPeerChanged?(session.connectedPeers) }
+        } else if state == .notConnected {
+            DispatchQueue.main.async { self.onPeerChanged?(session.connectedPeers) }
         }
     }
     

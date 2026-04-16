@@ -56,6 +56,10 @@ class GameViewController: UIViewController {
     
     var originalCenters: [UIImageView: CGPoint] = [:]
     
+    var isMultiplayerEnabled: Bool {
+        return !ConnectionManager.shared.session.connectedPeers.isEmpty
+    }
+    
     // game timer
     let gameDuration = 60
     var timeLeft = 60
@@ -406,30 +410,45 @@ class GameViewController: UIViewController {
         
         @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
             guard gameRunning,
-                  let imageView = gesture.view as? UIImageView,
-                  let ingredientName = ingredientNameForImageView(imageView) else { return }
-            
-            guard let targetPeer = getTargetPeer(for: gesture.direction) else {
-                statusLabel.text = "No player there!"
-                return
-            }
-            
-            // 1. Animate ingredient off-screen
-            let offset: CGFloat = gesture.direction == .left ? -500 : 500
-            imageView.isUserInteractionEnabled = false // Prevent interacting while passed
-            
-            UIView.animate(withDuration: 0.3, animations: {
-                imageView.center.x += offset
-            }) { _ in
-                imageView.isHidden = true // Hide it completely once off screen
-            }
-            
-            // 2. Send exclusively to the target peer
-            let action = GameAction.passIngredient(name: ingredientName)
-            if let data = try? JSONEncoder().encode(action) {
-                try? ConnectionManager.shared.session.send(data, toPeers: [targetPeer], with: .reliable)
-                statusLabel.text = "Passed \(ingredientName) to \(targetPeer.displayName)"
-            }
+                      let imageView = gesture.view as? UIImageView,
+                      let ingredientName = ingredientNameForImageView(imageView) else { return }
+                
+                if !isMultiplayerEnabled {
+                    // Just animate it off screen to "discard" it, then reset it
+                    UIView.animate(withDuration: 0.3, animations: {
+                        imageView.center.x += gesture.direction == .left ? -500 : 500
+                    }) { _ in
+                        // Remove it from the local toast if it was there
+                        self.addedIngredients.removeAll { $0.name == ingredientName }
+                        if ingredientName == "Butter" { self.butterPlaced = false }
+                        self.returnToOriginalPosition(imageView)
+                        self.statusLabel.text = "Discarded \(ingredientName)"
+                    }
+                    return
+                }
+                
+              
+                guard let targetPeer = getTargetPeer(for: gesture.direction) else {
+                    statusLabel.text = "No player there!"
+                    return
+                }
+                
+                let offset: CGFloat = gesture.direction == .left ? -500 : 500
+                imageView.isUserInteractionEnabled = false
+                
+                UIView.animate(withDuration: 0.3, animations: {
+                    imageView.center.x += offset
+                }) { _ in
+                    imageView.isHidden = true
+                   
+                    self.addedIngredients.removeAll { $0.name == ingredientName }
+                }
+                
+                let action = GameAction.passIngredient(name: ingredientName)
+                if let data = try? JSONEncoder().encode(action) {
+                    try? ConnectionManager.shared.session.send(data, toPeers: [targetPeer], with: .reliable)
+                    statusLabel.text = "Passed \(ingredientName) to \(targetPeer.displayName)"
+                }
         }
         
         @objc func handlePan(_ gesture: UIPanGestureRecognizer) {

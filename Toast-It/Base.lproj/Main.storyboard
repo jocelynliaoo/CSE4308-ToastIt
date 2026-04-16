@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_12" orientation="landscape" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -139,13 +139,33 @@
                     </view>
                     <navigationItem key="navigationItem" id="9Ic-wK-AgR"/>
                     <connections>
-                        <segue destination="weL-4X-Y38" kind="show" identifier="startGameSegue" id="nyQ-vv-6yf"/>
+                        <segue destination="weL-4X-Y38" kind="show" identifier="guestStartGameSegue" id="nyQ-vv-6yf"/>
+                        <segue destination="tx2-9k-qbl" kind="show" identifier="showTableSetupSegue" id="Kp2-5U-6M8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Qa-CG-9JY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="eiH-ot-5WK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-99.295774647887328" y="-373.28244274809157"/>
+        </scene>
+        <!--Table Setup View Controller-->
+        <scene sceneID="0ao-UO-K0a">
+            <objects>
+                <viewController id="tx2-9k-qbl" customClass="TableSetupViewController" customModule="Toast_It" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rj4-Fs-Vxb">
+                        <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="KGJ-cA-SP7"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="e3B-o7-EDt"/>
+                    <connections>
+                        <segue destination="weL-4X-Y38" kind="showDetail" identifier="hostStartGameSegue" id="2qI-y4-tqG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kLx-It-YLX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-999" y="511"/>
         </scene>
         <!--Game View Controller-->
         <scene sceneID="tji-tk-Uff">
@@ -405,7 +425,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="DFR-cf-6V0"/>
+        <segue reference="2qI-y4-tqG"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="PeanutButter" width="757" height="688"/>
@@ -427,7 +447,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBrownColor">
-            <color red="0.63529411759999999" green="0.51764705879999995" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.67450980390000004" green="0.49803921569999998" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

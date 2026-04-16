@@ -13,10 +13,15 @@ class LobbyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        ConnectionManager.shared.onConnected = { [weak self] in
-            
-            self?.performSegue(withIdentifier: "startGameSegue", sender: self)
+        ConnectionManager.shared.onDataReceived = { [weak self] data in
+            if let action = try? JSONDecoder().decode(GameAction.self, from: data) {
+                if case .setSeatingOrder(let players) = action {
+                    DispatchQueue.main.async {
+                        
+                        self?.performSegue(withIdentifier: "guestStartGameSegue", sender: players)
+                    }
+                }
+            }
         }
     }
     
@@ -29,7 +34,18 @@ class LobbyViewController: UIViewController {
     
     @IBAction func hostTapped(_ sender: UIButton) {
         let code = String(Int.random(in: 1000...9999))
-        print("Hosting game with code: \(code)")
         ConnectionManager.shared.hostLobby(with: code)
+        
+        
+        performSegue(withIdentifier: "showTableSetupSegue", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "guestStartGameSegue",
+           let destinationVC = segue.destination as? GameViewController,
+           let seatingOrder = sender as? [String] {
+            destinationVC.officialSeatingOrder = seatingOrder
+        }
     }
 }
+
