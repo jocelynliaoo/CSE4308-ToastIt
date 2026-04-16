@@ -105,7 +105,7 @@
                                     <fontDescription key="titleFontDescription" type="boldSystem" pointSize="25"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <action selector="mainMenuClicked:" destination="9vk-Zc-XZ2" eventType="touchUpInside" id="wth-mG-iMm"/>
+                                    <action selector="joinTapped:" destination="htz-c5-FqW" eventType="touchUpInside" id="tAc-ze-cAm"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gSs-ge-vzc">
@@ -113,11 +113,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="systemBrownColor"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Create">
+                                <buttonConfiguration key="configuration" style="filled" title="Host">
                                     <fontDescription key="titleFontDescription" type="boldSystem" pointSize="25"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <action selector="mainMenuClicked:" destination="9vk-Zc-XZ2" eventType="touchUpInside" id="E4r-IB-58x"/>
+                                    <action selector="hostTapped:" destination="htz-c5-FqW" eventType="touchUpInside" id="FMs-GM-3lT"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rx5-Jc-Vhd">
@@ -133,12 +133,32 @@
                                     <segue destination="BYZ-38-t0r" kind="show" id="DXw-OZ-ZhL"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8PK-jw-1QB">
+                                <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="U45-hQ-t0t">
+                                        <rect key="frame" x="382" y="124" width="88" height="69"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="contentStretch" x="0.40000000000000002" y="0.0" width="1" height="1"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Waiting for Host to set the table..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bhd-9z-VNK">
+                                        <rect key="frame" x="299" y="201" width="255" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="AIT-S3-6Pf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="9Ic-wK-AgR"/>
                     <connections>
+                        <outlet property="loadingOverlayView" destination="8PK-jw-1QB" id="m5b-ff-kgc"/>
                         <segue destination="tx2-9k-qbl" kind="show" identifier="showTableSetupSegue" id="Wpp-2U-czw"/>
                         <segue destination="weL-4X-Y38" kind="show" identifier="guestStartGameSegue" id="81o-mi-Qoo"/>
                     </connections>
@@ -159,11 +179,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="852" height="410"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FhB-v5-7TZ">
-                                <rect key="frame" x="115" y="16" width="622" height="198"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </tableView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72L-MT-aZZ">
                                 <rect key="frame" x="348" y="254" width="156" height="74"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -176,6 +191,11 @@
                                     <action selector="mainMenuClicked:" destination="9vk-Zc-XZ2" eventType="touchUpInside" id="98U-Kj-Hqr"/>
                                 </connections>
                             </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FhB-v5-7TZ">
+                                <rect key="frame" x="115" y="48" width="622" height="198"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="KGJ-cA-SP7"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -449,7 +469,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="81o-mi-Qoo"/>
+        <segue reference="2qI-y4-tqG"/>
         <segue reference="DXw-OZ-ZhL"/>
     </inferredMetricsTieBreakers>
     <resources>
