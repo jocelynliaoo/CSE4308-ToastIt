@@ -84,8 +84,7 @@ class GameViewController: UIViewController {
         Recipe(name: "Avocado and Egg Toast", requiredIngredients: [Ingredient(name: "Butter"), Ingredient(name: "Avocado"), Ingredient(name: "Egg"), Ingredient(name: "Seasoning")], points: 10),
     ]
     
-    let isMultiplayerEnabled = false
-    
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -11,8 +11,8 @@ import MultipeerConnectivity
 
 class TableSetupViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var tableView = UITableView()
-    var startGameButton = UIButton(type: .system)
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var startGameButton: UIButton!
     
    
     var players: [String] = [UIDevice.current.name]
@@ -82,4 +82,13 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
+    
+        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            if segue.identifier == "hostStartGameSegue",
+               let destinationVC = segue.destination as? GameViewController {
+                
+               
+                destinationVC.officialSeatingOrder = self.players
+            }
+        }
 }

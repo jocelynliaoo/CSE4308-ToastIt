@@ -17,6 +17,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
+                                <rect key="frame" x="0.0" y="-8" width="852" height="409"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgE-hR-038">
                                 <rect key="frame" x="412" y="246" width="154" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -45,6 +48,7 @@
                                 </buttonConfiguration>
                                 <connections>
                                     <action selector="playClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NnX-GU-GmK"/>
+                                    <segue destination="htz-c5-FqW" kind="show" identifier="showGameSegue" id="Jxb-gM-YW6"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Toast It!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNR-y6-IXa">
@@ -54,9 +58,6 @@
                                 <color key="textColor" systemColor="systemBrownColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
-                                <rect key="frame" x="0.0" y="-8" width="852" height="409"/>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -70,7 +71,6 @@
                     <navigationItem key="navigationItem" id="Dkh-q1-fgp"/>
                     <connections>
                         <outlet property="playButton" destination="wzw-lW-zFU" id="jwn-eK-3Ar"/>
-                        <segue destination="weL-4X-Y38" kind="show" identifier="showGameSegue" id="DFR-cf-6V0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -130,7 +130,7 @@
                                     <color key="baseForegroundColor" red="0.64744275809999996" green="0.50519913429999996" blue="0.38758742810000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <segue destination="eiH-ot-5WK" kind="unwind" unwindAction="unwindToHome:" id="hFL-4y-Unc"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" id="DXw-OZ-ZhL"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -139,12 +139,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="9Ic-wK-AgR"/>
                     <connections>
-                        <segue destination="weL-4X-Y38" kind="show" identifier="guestStartGameSegue" id="nyQ-vv-6yf"/>
-                        <segue destination="tx2-9k-qbl" kind="show" identifier="showTableSetupSegue" id="Kp2-5U-6M8"/>
+                        <segue destination="tx2-9k-qbl" kind="show" identifier="showTableSetupSegue" id="Wpp-2U-czw"/>
+                        <segue destination="weL-4X-Y38" kind="show" identifier="guestStartGameSegue" id="81o-mi-Qoo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Qa-CG-9JY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="eiH-ot-5WK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-99.295774647887328" y="-373.28244274809157"/>
         </scene>
@@ -155,17 +154,42 @@
                     <view key="view" contentMode="scaleToFill" id="rj4-Fs-Vxb">
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ToastIt-lobbyScreen" translatesAutoresizingMaskIntoConstraints="NO" id="de0-1M-oGy">
+                                <rect key="frame" x="0.0" y="0.0" width="852" height="410"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FhB-v5-7TZ">
+                                <rect key="frame" x="115" y="16" width="622" height="198"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72L-MT-aZZ">
+                                <rect key="frame" x="348" y="254" width="156" height="74"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" systemColor="systemBrownColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Start Game">
+                                    <fontDescription key="titleFontDescription" type="boldSystem" pointSize="25"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="mainMenuClicked:" destination="9vk-Zc-XZ2" eventType="touchUpInside" id="98U-Kj-Hqr"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="KGJ-cA-SP7"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="e3B-o7-EDt"/>
                     <connections>
+                        <outlet property="startGameButton" destination="72L-MT-aZZ" id="IAc-pP-qh1"/>
+                        <outlet property="tableView" destination="FhB-v5-7TZ" id="jje-Sv-NZ0"/>
                         <segue destination="weL-4X-Y38" kind="showDetail" identifier="hostStartGameSegue" id="2qI-y4-tqG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kLx-It-YLX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-999" y="511"/>
+            <point key="canvasLocation" x="-999.29577464788736" y="510.68702290076334"/>
         </scene>
         <!--Game View Controller-->
         <scene sceneID="tji-tk-Uff">
@@ -425,7 +449,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="2qI-y4-tqG"/>
+        <segue reference="81o-mi-Qoo"/>
+        <segue reference="DXw-OZ-ZhL"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="PeanutButter" width="757" height="688"/>
