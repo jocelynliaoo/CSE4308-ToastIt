@@ -15,6 +15,5 @@ class ViewController: UIViewController {
     }
     
     @IBAction func playClicked(_ sender: Any) {
-        performSegue(withIdentifier: "showGameSegue", sender: self)
     }
 }

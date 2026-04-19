@@ -48,12 +48,15 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
         startGameButton.setTitle("Start Dinner", for: .normal)
         startGameButton.backgroundColor = .systemBlue
         startGameButton.setTitleColor(.white, for: .normal)
-        startGameButton.addTarget(self, action: #selector(startGameTapped), for: .touchUpInside)
-        view.addSubview(startGameButton)
+//        startGameButton.addTarget(self, action: #selector(startGameTapped), for: .touchUpInside)
+//        view.addSubview(startGameButton)
     }
     
+    private var hasStartedGame = false
     @objc func startGameTapped() {
-     
+        guard !hasStartedGame else { return }
+        hasStartedGame = true
+        
         let action = GameAction.setSeatingOrder(playerNames: players)
         if let data = try? JSONEncoder().encode(action) {
             try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
@@ -91,4 +94,15 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
                 destinationVC.officialSeatingOrder = self.players
             }
         }
+    @IBAction func startGameTapped(_ sender: UIButton) {
+        guard !hasStartedGame else { return }
+        hasStartedGame = true
+        
+        let action = GameAction.setSeatingOrder(playerNames: players)
+        if let data = try? JSONEncoder().encode(action) {
+            try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
+        }
+        
+        performSegue(withIdentifier: "hostStartGameSegue", sender: self)
+    }
 }
