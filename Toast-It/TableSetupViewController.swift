@@ -105,4 +105,10 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
         
         performSegue(withIdentifier: "hostStartGameSegue", sender: self)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       
+        AudioManager.shared.playMusic(trackName: "menu_music")
+    }
 }

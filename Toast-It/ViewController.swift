@@ -16,4 +16,9 @@ class ViewController: UIViewController {
     
     @IBAction func playClicked(_ sender: Any) {
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+     
+        AudioManager.shared.playMusic(trackName: "menu_music")
+    }
 }

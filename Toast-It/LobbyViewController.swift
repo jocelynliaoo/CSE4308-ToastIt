@@ -62,6 +62,12 @@ class LobbyViewController: UIViewController {
             }
         }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        AudioManager.shared.playMusic(trackName: "menu_music")
+    }
+    
     
 }
 
