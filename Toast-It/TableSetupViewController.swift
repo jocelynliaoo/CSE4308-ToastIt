@@ -59,7 +59,7 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
             try? ConnectionManager.shared.session.send(data, toPeers: ConnectionManager.shared.session.connectedPeers, with: .reliable)
         }
         
-     
+        ConnectionManager.shared.hostSeatingOrder = players
         performSegue(withIdentifier: "hostStartGameSegue", sender: self)
     }
 
