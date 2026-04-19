@@ -294,10 +294,10 @@
             </objects>
             <point key="canvasLocation" x="-938.0281690140846" y="67.938931297709928"/>
         </scene>
-        <!--View Controller-->
+        <!--Settings View Controller-->
         <scene sceneID="QC7-d3-6fb">
             <objects>
-                <viewController id="2qz-4s-MdE" sceneMemberID="viewController">
+                <viewController id="2qz-4s-MdE" customClass="SettingsViewController" customModule="Toast_It" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MNi-zk-pok">
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -324,11 +324,17 @@
                                 <rect key="frame" x="247" y="118" width="359" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.6474609375" green="0.5053710938" blue="0.3876953125" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <connections>
+                                    <action selector="musicSliderChanged:" destination="2qz-4s-MdE" eventType="valueChanged" id="a1D-IZ-VWp"/>
+                                </connections>
                             </slider>
                             <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Vm9-AA-AA5">
                                 <rect key="frame" x="247" y="229" width="359" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.6474609375" green="0.5053710938" blue="0.3876953125" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <connections>
+                                    <action selector="soundSliderChanged:" destination="2qz-4s-MdE" eventType="valueChanged" id="IVP-DH-zyH"/>
+                                </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sound" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0rH-Pv-IVY">
                                 <rect key="frame" x="326" y="271" width="201" height="45"/>
@@ -342,6 +348,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="m53-fX-dBv"/>
+                    <connections>
+                        <outlet property="musicSlider" destination="dLt-kb-36S" id="Ojf-ur-PA9"/>
+                        <outlet property="soundSlider" destination="Vm9-AA-AA5" id="DY4-9e-Bdy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YUt-ph-3rS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
