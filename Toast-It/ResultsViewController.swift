@@ -21,14 +21,29 @@ class ResultsViewController: UIViewController {
     var dishesLost = 0
     var finalScore = 0
     
+    private var hasSavedStats = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         dishesSubmittedLabel.text = "\(dishesSubmitted)"
         dishesLostLabel.text = "\(dishesLost)"
         finalScoreLabel.text = "\(finalScore)"
+        
+        saveLifetimeStatsIfNeeded()
     }
     
-    
+    func saveLifetimeStatsIfNeeded() {
+        guard !hasSavedStats else { return }
+        hasSavedStats = true
+        
+        StatsManager.shared.updateStats(
+            roundsPlayed: 3,
+            dishesSubmitted: dishesSubmitted,
+            dishesLost: dishesLost,
+            pointsScored: finalScore
+        )
+    }
+
     @IBAction func mainMenuClicked(_ sender: Any) {
         performSegue(withIdentifier: "showMainMenuSegue", sender: self)
     }
