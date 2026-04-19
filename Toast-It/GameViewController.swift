@@ -57,7 +57,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // lifecycle
     override func viewDidLoad() {
        super.viewDidLoad()
-
+       self.navigationItem.hidesBackButton = true
        view.sendSubviewToBack(backgroundImageView)
        buildIngredientViewsMap()
 
@@ -191,8 +191,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // recipe assignment
     private func assignNewRecipe(notifyPeers: Bool = true) {
-        let allPlayers = officialSeatingOrder.isEmpty
-            ? [myName] + ConnectionManager.shared.session.connectedPeers.map { $0.displayName }
+        let allPeerIDs: [MCPeerID] = [ConnectionManager.shared.session.myPeerID]
+            + ConnectionManager.shared.session.connectedPeers
+        let allPlayers: [String] = officialSeatingOrder.isEmpty
+            ? allPeerIDs.map { $0.displayName }
             : officialSeatingOrder
         
         let possibleRecipes = gameModel.recipesForCurrentRound
@@ -228,7 +230,12 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 
                 // Start everyone with Butter
-                var distribution: [String: [String]] = Dictionary(uniqueKeysWithValues: allPlayers.map { ($0, ["Butter"]) })
+                var distribution: [String: [String]] = allPlayers.reduce(into: [:]) { result, player in
+                    if result[player] == nil {
+                        result[player] = ["Butter"]
+                    }
+                }
+                
                 let shuffledPool = roundIngredientPool.shuffled()
                 
                 // Randomly scatter the pool to different players
