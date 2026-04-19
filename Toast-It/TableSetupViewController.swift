@@ -95,6 +95,7 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
     @IBAction func startGameTapped(_ sender: UIButton) {
+        AudioManager.shared.playSFX(fileName: "menu_click")
         guard !hasStartedGame else { return }
         hasStartedGame = true
         

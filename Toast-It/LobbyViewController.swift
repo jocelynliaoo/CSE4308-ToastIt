@@ -17,6 +17,7 @@ class LobbyViewController: UIViewController {
     
     
     @IBAction func joinTapped(_ sender: UIButton) {
+        AudioManager.shared.playSFX(fileName: "menu_click")
         loadingOverlayView.isHidden = false
         print("Searching for host...")
         
@@ -25,6 +26,7 @@ class LobbyViewController: UIViewController {
     
     
     @IBAction func hostTapped(_ sender: UIButton) {
+        AudioManager.shared.playSFX(fileName: "menu_click")
         let code = "1234"
         
         ConnectionManager.shared.hostLobby(with: code)

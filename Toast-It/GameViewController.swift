@@ -384,7 +384,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private func handleFlick(_ imageView: UIImageView, velocity: CGPoint) {
         guard let name = ingredientNameForImageView(imageView) else { return }
-
+        
+        AudioManager.shared.playSFX(fileName: "swipe_whoosh")
         let direction: CGFloat = velocity.x > 0 ? 1 : -1
         let offset: CGFloat = direction * 700
 
@@ -521,6 +522,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         let result = gameModel.submitDish()
         switch result {
         case .correct(let points):
+            AudioManager.shared.playSFX(fileName: "order_bell")
             statusLabel.text = "Correct! +\(points) pts."
  
             // Apply score — host is the single source of truth

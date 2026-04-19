@@ -15,10 +15,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func playClicked(_ sender: Any) {
+        AudioManager.shared.playSFX(fileName: "menu_click")
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
      
         AudioManager.shared.playMusic(trackName: "menu_music")
     }
+    
+    
 }
