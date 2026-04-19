@@ -416,6 +416,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
 
         guard let targetPeer = targetPeer(for: direction > 0 ? .right : .left) else {
+            statusLabel.text = "Can't pass right now!"
             returnToOriginalPosition(imageView)
             return
         }

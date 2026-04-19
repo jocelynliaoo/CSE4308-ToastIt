@@ -226,9 +226,7 @@ class GameModel {
     }
     
     private func isSinglePlayer() -> Bool {
-        // If you don't have a reference to ConnectionManager here,
-        // you can check if you're using the default logic from VC
-        return !ConnectionManager.shared.session.connectedPeers.isEmpty == false
+        return ConnectionManager.shared.session.connectedPeers.isEmpty
     }
 
     private func generateDecoys(for recipe: Recipe, count: Int) -> [String] {
