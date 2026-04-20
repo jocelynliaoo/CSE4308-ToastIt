@@ -26,8 +26,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var creamImageView: UIImageView!
     @IBOutlet weak var avocadoImageView: UIImageView!
     @IBOutlet weak var seasoningImageView: UIImageView!
-    
-    // add timerLabel, scoreLabel, recipe progress view
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var recipeProgressView: UIProgressView!
@@ -166,11 +164,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
             
-            // reset the local player's plate state
+        
             self.gameModel.clearPlateState()
             self.returnAllIngredientsToOrigin()
 
-            // assign a new recipe after a brief delay so the player can see the failure state
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 guard self.gameModel.gameRunning else { return }
                 self.assignNewRecipe(notifyPeers: true)
@@ -213,7 +211,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                 }
                 
-                // Start everyone with Butter
+          
                 var distribution: [String: [String]] = allPlayers.reduce(into: [:]) { result, player in
                     if result[player] == nil {
                         result[player] = ["Butter"]
@@ -222,7 +220,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 
                 let shuffledPool = roundIngredientPool.shuffled()
                 
-                // Randomly scatter the pool to different players
+                // Randomly scatter
                 for (index, ingredient) in shuffledPool.enumerated() {
                     let recipient = allPlayers[index % allPlayers.count]
                     distribution[recipient]?.append(ingredient)
@@ -281,7 +279,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             if inventoryCount > 0 || isPlacedOnPlate {
                 imageView.isHidden = false
                 imageView.isUserInteractionEnabled = inventoryCount > 0
-                // Show a count badge when duplicates are present
+
                 showCountBadge(on: imageView, count: inventoryCount)
             } else {
                 imageView.isHidden = true
@@ -292,7 +290,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showCountBadge(on imageView: UIImageView, count: Int) {
-        // Remove any existing badge
+      
         imageView.subviews.forEach { if $0.tag == 999 { $0.removeFromSuperview() } }
         guard count > 1 else { return }
 
@@ -451,7 +449,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             return
         }
  
-        // Determine which side the sender is on
+
         let comesFromRight: Bool
         if let myIndex = officialSeatingOrder.firstIndex(of: myName),
            let senderIndex = officialSeatingOrder.firstIndex(of: senderName) {
@@ -486,7 +484,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                     break // not handled during gameplay
                     
                 case .playerLeftLobby(let name):
-                    // Stop the game and notify the remaining player
+                   
                     self.gameModel.abruptlyEndGame()
                     self.statusLabel.text = "\(name) left the game."
                     
@@ -519,7 +517,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.gameModel.assignRecipe(self.gameModel.currentRecipe, visibleIngredients: names)
  
                 case .awardPoints(let points):
-                    // Only the host handles this — add points and broadcast new total
+                   
                     if ConnectionManager.shared.isHost {
                         let newScore = self.gameModel.hostApplyScore(points: points)
                         ConnectionManager.shared.send(action: .syncScore(teamScore: newScore))

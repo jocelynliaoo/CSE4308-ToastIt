@@ -81,7 +81,7 @@ class GameModel {
     private(set) var timeLeft = 45
     private(set) var gameRunning = false
     
-    // player's own plate — independent of all other players
+    // player's own plate
     private(set) var addedIngredients: [Ingredient] = []
     private(set) var butterPlaced = false
     var currentRecipe: Recipe
@@ -197,11 +197,11 @@ class GameModel {
         self.currentRecipe = recipe
         
         if isSinglePlayer() {
-            // Force a clean slate for single player
+            // Clean Slate
             let required = recipe.requiredIngredients.map { $0.name }
             let decoys = generateDecoys(for: recipe, count: 2)
             
-            // Combine and shuffle so the order isn't predictable
+            // Combine and shuffle s
             self.myVisibleIngredientNames = (required + decoys).shuffled()
         } else {
             for item in visibleIngredients {
@@ -239,7 +239,7 @@ class GameModel {
             "Peanut Butter", "Cream", "Avocado", "Seasoning"
         ]
         
-        // Filter out what's actually in the recipe so decoys are truly decoys
+     
         let potentialDecoys = allPossibleIngredients.filter { !requiredNames.contains($0) }
         return Array(potentialDecoys.shuffled().prefix(count))
     }
