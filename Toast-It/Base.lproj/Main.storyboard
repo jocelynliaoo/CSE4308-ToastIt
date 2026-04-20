@@ -107,23 +107,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
-                                <rect key="frame" x="0.0" y="-8" width="852" height="409"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="toastIt-mainScreen" translatesAutoresizingMaskIntoConstraints="NO" id="9PL-st-bHT">
+                                <rect key="frame" x="-19" y="-41" width="871" height="470"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgE-hR-038">
-                                <rect key="frame" x="412" y="246" width="154" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="tintColor" systemColor="systemBrownColor"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Settings">
-                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="16"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <segue destination="2qz-4s-MdE" kind="show" id="gWU-e0-0hl"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-yu-TXN">
-                                <rect key="frame" x="412" y="203" width="154" height="35"/>
+                                <rect key="frame" x="408" y="203" width="141" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="systemBrownColor"/>
                                 <state key="normal" title="Button"/>
@@ -135,14 +123,14 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Toast It!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNR-y6-IXa">
-                                <rect key="frame" x="303" y="59" width="247" height="61"/>
+                                <rect key="frame" x="326" y="28" width="180" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="ArialRoundedMTBold" family="Arial Rounded MT Bold" pointSize="46"/>
                                 <color key="textColor" systemColor="systemBrownColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wzw-lW-zFU">
-                                <rect key="frame" x="257" y="218" width="69" height="29"/>
+                                <rect key="frame" x="242" y="214" width="73" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="systemBrownColor"/>
                                 <state key="normal" title="Button"/>
@@ -154,14 +142,26 @@
                                     <segue destination="htz-c5-FqW" kind="show" id="KQ7-oE-OMG"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WgE-hR-038">
+                                <rect key="frame" x="408" y="251" width="141" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" systemColor="systemBrownColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Settings">
+                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="16"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <segue destination="2qz-4s-MdE" kind="show" id="gWU-e0-0hl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="9PL-st-bHT" secondAttribute="trailing" id="LiA-A1-uaf"/>
-                            <constraint firstItem="9PL-st-bHT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="VrC-MT-Wae"/>
-                            <constraint firstAttribute="bottom" secondItem="9PL-st-bHT" secondAttribute="bottom" id="kTn-Td-eOD"/>
-                            <constraint firstItem="9PL-st-bHT" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="uHo-6i-f2q"/>
+                            <constraint firstAttribute="bottom" secondItem="9PL-st-bHT" secondAttribute="bottom" constant="-36" id="2M0-av-AaL"/>
+                            <constraint firstAttribute="trailing" secondItem="9PL-st-bHT" secondAttribute="trailing" id="GIb-c8-6xH"/>
+                            <constraint firstItem="9PL-st-bHT" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="-41" id="Gmk-mZ-4MR"/>
+                            <constraint firstItem="9PL-st-bHT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="-19" id="OpA-QG-jgA"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Dkh-q1-fgp"/>
@@ -171,7 +171,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-189" y="-1731"/>
+            <point key="canvasLocation" x="-189.43661971830986" y="-1732.06106870229"/>
         </scene>
         <!--Lobby View Controller-->
         <scene sceneID="N5I-xU-gpE">
@@ -181,9 +181,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ToastIt-lobbyScreen" translatesAutoresizingMaskIntoConstraints="NO" id="DHD-3v-qRB">
-                                <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ToastIt-lobbyScreen" translatesAutoresizingMaskIntoConstraints="NO" id="DHD-3v-qRB">
+                                <rect key="frame" x="0.0" y="-15" width="887" height="437"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Join A Friend's Bakery Or Create Your Own!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rhx-FW-INy">
                                 <rect key="frame" x="165" y="0.0" width="523" height="245"/>
@@ -238,6 +237,12 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="AIT-S3-6Pf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="DHD-3v-qRB" firstAttribute="top" secondItem="S6L-wb-ot6" secondAttribute="top" constant="-15" id="5Dt-3q-sEN"/>
+                            <constraint firstAttribute="trailing" secondItem="DHD-3v-qRB" secondAttribute="trailing" constant="-35" id="Gdl-2V-mY0"/>
+                            <constraint firstAttribute="bottom" secondItem="DHD-3v-qRB" secondAttribute="bottom" constant="-29" id="Lh2-Wi-OD3"/>
+                            <constraint firstItem="DHD-3v-qRB" firstAttribute="leading" secondItem="S6L-wb-ot6" secondAttribute="leading" id="xQC-au-QGb"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="9Ic-wK-AgR"/>
                     <connections>
@@ -248,7 +253,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Qa-CG-9JY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-99" y="-781"/>
+            <point key="canvasLocation" x="-99.295774647887328" y="-782.44274809160299"/>
         </scene>
         <!--Table Setup View Controller-->
         <scene sceneID="0ao-UO-K0a">
@@ -258,10 +263,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="852" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ToastIt-lobbyScreen" translatesAutoresizingMaskIntoConstraints="NO" id="de0-1M-oGy">
-                                <rect key="frame" x="0.0" y="0.0" width="852" height="410"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72L-MT-aZZ">
                                 <rect key="frame" x="348" y="254" width="156" height="74"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -279,9 +280,18 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ToastIt-lobbyScreen" translatesAutoresizingMaskIntoConstraints="NO" id="de0-1M-oGy">
+                                <rect key="frame" x="0.0" y="-75" width="921" height="543"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="KGJ-cA-SP7"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="de0-1M-oGy" secondAttribute="bottom" constant="-75" id="8Yp-dj-Qdw"/>
+                            <constraint firstItem="de0-1M-oGy" firstAttribute="top" secondItem="rj4-Fs-Vxb" secondAttribute="top" constant="-75" id="J5W-zd-vh2"/>
+                            <constraint firstItem="de0-1M-oGy" firstAttribute="leading" secondItem="rj4-Fs-Vxb" secondAttribute="leading" id="NaK-yA-RzH"/>
+                            <constraint firstAttribute="trailing" secondItem="de0-1M-oGy" secondAttribute="trailing" constant="-69" id="OFV-EK-LWo"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="e3B-o7-EDt"/>
                     <connections>
@@ -634,7 +644,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="YkT-um-VLC"/>
+        <segue reference="81o-mi-Qoo"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="PeanutButter" width="757" height="688"/>

@@ -46,7 +46,6 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
         
         startGameButton.frame = CGRect(x: 20, y: view.bounds.height - 80, width: view.bounds.width - 40, height: 50)
         startGameButton.setTitle("Start Dinner", for: .normal)
-        startGameButton.backgroundColor = .systemBlue
         startGameButton.setTitleColor(.white, for: .normal)
 //        startGameButton.addTarget(self, action: #selector(startGameTapped), for: .touchUpInside)
 //        view.addSubview(startGameButton)
