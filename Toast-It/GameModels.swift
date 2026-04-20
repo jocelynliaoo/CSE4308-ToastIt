@@ -28,6 +28,8 @@ enum GameAction: Codable {
     case setMyIngredients(names: [String])
     case setRecipe(recipe: Recipe)
     case clearInventory
+    case playAgain
+    case playerLeftLobby(name: String)
 }
 
 enum SubmitResult {
@@ -357,5 +359,12 @@ class GameModel {
         onTeamScoreChanged?(teamScore)
         onStatusChanged?("Too slow! Dish lost.")
         onRecipeExpired?()
+    }
+    
+    func abruptlyEndGame() {
+        gameTimer?.invalidate()
+        gameTimer = nil
+        stopRecipeTimer()
+        gameRunning = false
     }
 }

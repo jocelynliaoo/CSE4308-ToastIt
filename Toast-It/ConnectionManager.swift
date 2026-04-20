@@ -53,6 +53,23 @@ class ConnectionManager: NSObject, MCSessionDelegate, MCNearbyServiceAdvertiserD
         browser?.startBrowsingForPeers()
     }
     
+    func reset() {
+        advertiser?.stopAdvertisingPeer()
+        advertiser = nil
+        browser?.stopBrowsingForPeers()
+        browser = nil
+        session.disconnect()
+        session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
+        session.delegate = self
+        isHost = false
+        targetCode = ""
+        hostSeatingOrder = []
+        lastSenderName = nil
+        onPeerChanged = nil
+        onDataReceived = nil
+        onConnected = nil
+    }
+    
     // convenience send
     func send(action: GameAction, toPeers peers: [MCPeerID]? = nil) {
         guard let data = try? JSONEncoder().encode(action) else { return }

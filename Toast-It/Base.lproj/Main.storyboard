@@ -563,7 +563,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HuB-8J-rKR">
-                                <rect key="frame" x="304" y="286" width="113" height="52"/>
+                                <rect key="frame" x="307" y="301" width="113" height="52"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="systemBrownColor"/>
                                 <state key="normal" title="Button"/>
@@ -575,7 +575,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Auv-Qd-BKP">
-                                <rect key="frame" x="430" y="286" width="113" height="52"/>
+                                <rect key="frame" x="433" y="301" width="113" height="52"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" systemColor="systemBrownColor"/>
                                 <state key="normal" title="Button"/>
@@ -594,6 +594,13 @@
                                 <rect key="frame" x="603" y="118" width="173" height="157"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UlS-EM-3UW">
+                                <rect key="frame" x="307" y="266" width="239" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yre-2e-Hfd"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -605,13 +612,14 @@
                         <outlet property="finalScoreLabel" destination="D1n-aB-Ikj" id="dqO-rJ-ZST"/>
                         <outlet property="mainMenuButton" destination="HuB-8J-rKR" id="vhM-N5-a1Z"/>
                         <outlet property="playAgainButton" destination="Auv-Qd-BKP" id="dZ3-6y-h4V"/>
+                        <outlet property="statusLabel" destination="UlS-EM-3UW" id="Pfs-OJ-r0B"/>
                         <segue destination="7bE-2l-XOT" kind="show" identifier="showMainMenuSegue" id="eCe-8e-33D"/>
                         <segue destination="weL-4X-Y38" kind="show" identifier="showGameSegue" id="YkT-um-VLC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9ZP-O9-iVs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-938" y="-782"/>
+            <point key="canvasLocation" x="-938.0281690140846" y="-782.44274809160299"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="SjE-Fu-xKM">

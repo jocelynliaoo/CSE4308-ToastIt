@@ -499,6 +499,24 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
  
             DispatchQueue.main.async {
                 switch action {
+                case .playAgain:
+                    break // not handled during gameplay
+                    
+                case .playerLeftLobby(let name):
+                    // Stop the game and notify the remaining player
+                    self.gameModel.abruptlyEndGame()
+                    self.statusLabel.text = "\(name) left the game."
+                    
+                    let alert = UIAlertController(
+                        title: "Player Left",
+                        message: "\(name) left the game. Returning to main menu.",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                        ConnectionManager.shared.reset()
+                        self.performSegue(withIdentifier: "showMainMenuSegue", sender: self)
+                    })
+                    self.present(alert, animated: true)
                 case .clearInventory:
                     self.gameModel.clearPlateState()
                     self.gameModel.clearInventoryOnly()
