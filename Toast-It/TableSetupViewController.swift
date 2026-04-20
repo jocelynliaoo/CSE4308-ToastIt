@@ -23,14 +23,11 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
         title = "Arrange Table"
         
         setupUI()
-        
-     
+    
         tableView.isEditing = true
         
-     
         ConnectionManager.shared.onPeerChanged = { [weak self] peers in
             DispatchQueue.main.async {
-               
                 self?.players = [UIDevice.current.name] + peers.map { $0.displayName }
                 self?.tableView.reloadData()
             }
@@ -48,8 +45,6 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
         startGameButton.setTitle("Start Dinner", for: .normal)
         startGameButton.backgroundColor = .systemBlue
         startGameButton.setTitleColor(.white, for: .normal)
-//        startGameButton.addTarget(self, action: #selector(startGameTapped), for: .touchUpInside)
-//        view.addSubview(startGameButton)
     }
     
     private var hasStartedGame = false
@@ -82,18 +77,20 @@ class TableSetupViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .none 
     }
+    
     func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
     
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            if segue.identifier == "hostStartGameSegue",
-               let destinationVC = segue.destination as? GameViewController {
-                
-               
-                destinationVC.officialSeatingOrder = self.players
-            }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "hostStartGameSegue",
+           let destinationVC = segue.destination as? GameViewController {
+            
+           
+            destinationVC.officialSeatingOrder = self.players
         }
+    }
+    
     @IBAction func startGameTapped(_ sender: UIButton) {
         AudioManager.shared.playSFX(fileName: "menu_click")
         guard !hasStartedGame else { return }

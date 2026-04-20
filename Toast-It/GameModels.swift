@@ -30,6 +30,7 @@ enum GameAction: Codable {
     case clearInventory
     case playAgain
     case playerLeftLobby(name: String)
+    case startGame
 }
 
 enum SubmitResult {
@@ -287,7 +288,6 @@ class GameModel {
             stopRecipeTimer()
             dishesSubmitted += 1
             return .correct(points: currentRecipe.points)
-            // Caller handles plate reset + new recipe after score is confirmed
         } else {
             let missing = recipeSet.subtracting(addedSet)
             if missing.isEmpty {

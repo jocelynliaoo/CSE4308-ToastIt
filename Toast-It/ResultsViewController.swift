@@ -29,16 +29,15 @@ class ResultsViewController: UIViewController {
     
     private var localReadyForPlayAgain = false
     
-    private var totalPlayers: Int {
-        ConnectionManager.shared.session.connectedPeers.count + 1
-    }
+    private var totalPlayers = 1  // set in viewDidLoad
     
     private var isMultiplayer: Bool {
-        return !ConnectionManager.shared.session.connectedPeers.isEmpty
+        return totalPlayers > 1
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        totalPlayers = ConnectionManager.shared.session.connectedPeers.count + 1
         dishesSubmittedLabel.text = "\(dishesSubmitted)"
         dishesLostLabel.text = "\(dishesLost)"
         finalScoreLabel.text = "\(finalScore)"
@@ -67,9 +66,15 @@ class ResultsViewController: UIViewController {
             DispatchQueue.main.async {
                 switch action {
                 case .playAgain:
-                    self.handleRemotePlayAgain()
+                    self.playAgainCount += 1
+                    self.updateReadyStatus()
+                    if ConnectionManager.shared.isHost {
+                        self.checkAllPlayersReady()
+                    }
                 case .playerLeftLobby(let name):
                     self.handleRemotePlayerLeft(name: name)
+                case .startGame:
+                    self.launchNewGame()
                 default:
                     break
                 }
@@ -78,7 +83,6 @@ class ResultsViewController: UIViewController {
     }
     
     @IBAction func mainMenuClicked(_ sender: Any) {
-        //performSegue(withIdentifier: "showMainMenuSegue", sender: self)
         if isMultiplayer {
             // Tell other players we're leaving before disconnecting
             let myName = ConnectionManager.shared.session.myPeerID.displayName
@@ -118,27 +122,13 @@ class ResultsViewController: UIViewController {
         }
     }
     
-    private func handleRemotePlayAgain() {
-        guard ConnectionManager.shared.isHost else {
-            // Guest receives this from host — it means everyone is ready, let's go
-            launchNewGame()
-            return
-        }
-        
-        playAgainCount += 1
-        updateReadyStatus()
-        if ConnectionManager.shared.isHost {
-            checkAllPlayersReady()
-        }
-    }
-    
     private func updateReadyStatus() {
         statusLabel.text = "\(playAgainCount)/\(totalPlayers) players ready"
     }
     
     private func checkAllPlayersReady() {
         guard playAgainCount >= totalPlayers else { return }
-        ConnectionManager.shared.send(action: .playAgain) // final broadcast to guests
+        ConnectionManager.shared.send(action: .startGame) // final broadcast to guests
         launchNewGame()
     }
     

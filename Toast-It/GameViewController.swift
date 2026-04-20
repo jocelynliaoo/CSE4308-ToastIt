@@ -73,18 +73,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
        gameModel.startGame()
         
        
-        if ConnectionManager.shared.isHost {
-                officialSeatingOrder = ConnectionManager.shared.hostSeatingOrder
-                
-               
-                if officialSeatingOrder.isEmpty {
-                    officialSeatingOrder = [myName] + ConnectionManager.shared.session.connectedPeers.map { $0.displayName }
-                }
-                
-              
-                ConnectionManager.shared.send(action: .setSeatingOrder(playerNames: officialSeatingOrder))
+       if ConnectionManager.shared.isHost {
+            officialSeatingOrder = ConnectionManager.shared.hostSeatingOrder
+            if officialSeatingOrder.isEmpty {
+                officialSeatingOrder = [myName] + ConnectionManager.shared.session.connectedPeers.map { $0.displayName }
             }
-        
+            ConnectionManager.shared.send(action: .setSeatingOrder(playerNames: officialSeatingOrder))
+        }
     }
     
     // setup
@@ -161,28 +156,26 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
  
         gameModel.onRecipeExpired = { [weak self] in
-                    guard let self else { return }
-                        
-                    // 1. Synchronize the score penalty across the network
-                    if self.isMultiplayerEnabled {
-                        if ConnectionManager.shared.isHost {
-                            ConnectionManager.shared.send(action: .syncScore(teamScore: self.gameModel.teamScore))
-                         } else {
-                            // FIX: Broadcast the penalty (the host will automatically intercept and apply this)
-                            ConnectionManager.shared.send(action: .awardPoints(points: -self.gameModel.currentRecipe.points))
-                        }
-                    }
-                    
-                    // 2. Reset the local player's plate state
-                    self.gameModel.clearPlateState()
-                    self.returnAllIngredientsToOrigin()
-
-                    // 3. Assign a new recipe after a brief delay so the player can see the failure state
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                        guard self.gameModel.gameRunning else { return }
-                        self.assignNewRecipe(notifyPeers: true)
-                    }
+            guard let self else { return }
+                
+            if self.isMultiplayerEnabled {
+                if ConnectionManager.shared.isHost {
+                    ConnectionManager.shared.send(action: .syncScore(teamScore: self.gameModel.teamScore))
+                 } else {
+                    ConnectionManager.shared.send(action: .awardPoints(points: -self.gameModel.currentRecipe.points))
                 }
+            }
+            
+            // reset the local player's plate state
+            self.gameModel.clearPlateState()
+            self.returnAllIngredientsToOrigin()
+
+            // assign a new recipe after a brief delay so the player can see the failure state
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                guard self.gameModel.gameRunning else { return }
+                self.assignNewRecipe(notifyPeers: true)
+            }
+        }
  
         gameModel.onGameEnded = { [weak self] in
             self?.performSegue(withIdentifier: "showResultsSegue", sender: self)
@@ -198,15 +191,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             : officialSeatingOrder
         
         let possibleRecipes = gameModel.recipesForCurrentRound
-//        var roundIngredientPool: [String] = []
-//        
-//        for recipe in possibleRecipes {
-//            for ingredient in recipe.requiredIngredients {
-//                if ingredient.name != "Butter" {
-//                    roundIngredientPool.append(ingredient.name)
-//                }
-//            }
-//        }
         
         if isMultiplayerEnabled {
             if ConnectionManager.shared.isHost && notifyPeers {
@@ -409,7 +393,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             UIView.animate(withDuration: 0.25, animations: {
                 imageView.center.x += offset
             }) { _ in
-//                self.gameModel.removeIngredient(name: name)
                 self.returnToOriginalPosition(imageView)
             }
             return
@@ -486,9 +469,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
             imageView.center = originalCenter
         }, completion: nil)
-// 
-//        gameModel.receivePassedIngredient(name: name)
-//        statusLabel.text = "\(senderName) passed you \(name)!"
     }
     
     // multiplayer
@@ -499,6 +479,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
  
             DispatchQueue.main.async {
                 switch action {
+                case .startGame:
+                    break // not handled during gameplay
+                    
                 case .playAgain:
                     break // not handled during gameplay
                     
@@ -555,29 +538,29 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // actions
     @IBAction func submitTapped(_ sender: UIButton) {
         let result = gameModel.submitDish()
-            switch result {
-            case .correct(let points):
-                AudioManager.shared.playSFX(fileName: "order_bell")
-                statusLabel.text = "Correct! +\(points) pts."
+        switch result {
+        case .correct(let points):
+            AudioManager.shared.playSFX(fileName: "order_bell")
+            statusLabel.text = "Correct! +\(points) pts."
 
-               
-                if ConnectionManager.shared.isHost || !isMultiplayerEnabled {
-                    let newScore = gameModel.hostApplyScore(points: points)
-                    if isMultiplayerEnabled {
-                        ConnectionManager.shared.send(action: .syncScore(teamScore: newScore))
-                    }
-                } else {
-                   
-                    ConnectionManager.shared.send(action: .awardPoints(points: points))
+           
+            if ConnectionManager.shared.isHost || !isMultiplayerEnabled {
+                let newScore = gameModel.hostApplyScore(points: points)
+                if isMultiplayerEnabled {
+                    ConnectionManager.shared.send(action: .syncScore(teamScore: newScore))
                 }
-                    
-                gameModel.clearPlateState()
-                self.returnAllIngredientsToOrigin()
-                assignNewRecipe(notifyPeers: false)
-
-            case .tooManyIngredients, .missingIngredients:
-                break
+            } else {
+               
+                ConnectionManager.shared.send(action: .awardPoints(points: points))
             }
+                
+            gameModel.clearPlateState()
+            self.returnAllIngredientsToOrigin()
+            assignNewRecipe(notifyPeers: false)
+
+        case .tooManyIngredients, .missingIngredients:
+            break
+        }
     }
     
     @IBAction func resetTapped(_ sender: UIButton) {
